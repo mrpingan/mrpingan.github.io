@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
-    <title>Gridea</title>
-    <updated>2019-06-24T01:49:52.297Z</updated>
+    <title>Ping&apos;s Home</title>
+    <updated>2019-06-24T01:52:16.975Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2019, Gridea</rights>
+    <rights>All rights reserved 2019, Ping&apos;s Home</rights>
     <entry>
         <title type="html"><![CDATA[Django 中的 context_processors 好处]]></title>
         <id>https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu</id>
