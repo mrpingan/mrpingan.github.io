@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-06-24T02:00:50.432Z</updated>
+    <updated>2019-06-24T02:02:55.490Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -24,6 +24,7 @@
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
 ]
+
 </code></pre>
 <p>除此之外，请求上下文默认开启<code>django.template.context_processors.csrf</code>，这是为了安全考虑，而且已经硬编码了，不能在<code>context_processors</code>中关闭。这就是为什么我们可以在模板中直接使用 <code>{{ csrf_token }}</code>的原因</p>
 <p>每一个处理器有顺序。这意味着，如果一个处理器添加了一个变量到上下文，第二个处理器也添加了一个同名的变量到上下文，这样，第二个添加的变量的值会覆盖第一个。</p>

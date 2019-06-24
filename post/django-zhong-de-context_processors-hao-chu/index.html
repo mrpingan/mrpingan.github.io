@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1561341641120">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1561341772203">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://mrpingan.github.io">
-        <img src="https://mrpingan.github.io/images/avatar.png?v=1561341641120" class="site-logo">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1561341772203" class="site-logo">
         <h1 class="site-title">Ping&#39;s Home</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -104,6 +104,7 @@
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
 ]
+
 </code></pre>
 <p>除此之外，请求上下文默认开启<code>django.template.context_processors.csrf</code>，这是为了安全考虑，而且已经硬编码了，不能在<code>context_processors</code>中关闭。这就是为什么我们可以在模板中直接使用 <code>{{ csrf_token }}</code>的原因</p>
 <p>每一个处理器有顺序。这意味着，如果一个处理器添加了一个变量到上下文，第二个处理器也添加了一个同名的变量到上下文，这样，第二个添加的变量的值会覆盖第一个。</p>
