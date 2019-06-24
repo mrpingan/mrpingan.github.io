@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-06-24T01:58:52.212Z</updated>
+    <updated>2019-06-24T02:00:50.432Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -16,8 +16,7 @@
         <link href="https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu">
         </link>
         <updated>2019-06-23T13:48:11.000Z</updated>
-        <content type="html"><![CDATA[<p>[TOC]</p>
-<h1 id="context_processors"><code>context_processors</code></h1>
+        <content type="html"><![CDATA[<h1 id="context_processors"><code>context_processors</code></h1>
 <p>从字面上理解为上下文，会将请求对象作为参数并以字典的方式合并到context中返回。比如，使用<code>render</code>函数的时候，就需要返回context，有了<code>context_processors</code>,就可以不用再去给模板传递过多的参数。在默认生成的配置文件<code>settings.py</code>中，默认模板引擎包含以下上下文处理器：</p>
 <pre><code class="language-python">[
 		'django.template.context_processors.debug',
@@ -32,19 +31,23 @@
 <h3 id="djangocontribauthcontext_processorsauth">django.contrib.auth.context_processors.auth</h3>
 <p>如果这个处理器开启了，每一个请求上下文都将下面的变量：</p>
 <ul>
-<li>user
-当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 {{ user.username }}调用</li>
-<li>perms
-当前登陆用户的所有实例。可以在模板中通过{{ perms.models_name.permission_name }}调用</li>
+<li>user</li>
 </ul>
+<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 {{ user.username }}调用</p>
+<ul>
+<li>perms</li>
+</ul>
+<p>当前登陆用户的所有实例。可以在模板中通过{{ perms.models_name.permission_name }}调用</p>
 <h3 id="djangotemplatecontext_processorsdebug">django.template.context_processors.debug</h3>
 <p>如果这个选项开启了，每一个请求上下文都将包含下面两个变量。但是只有你的<code>DEBUG</code>设置为<code>True</code>,而且请求的IP地址（<code>request.META['REMOTE_ADDR']</code>）在<code>INTERNAL_IPS</code>设置的列表中：</p>
 <ul>
-<li>debug
-可以使用这个变量来测试是否你正处于<code>DEBUG</code>模式</li>
-<li>sql_queries
-一个<code>{'sql': ..., 'time': ...}</code>的字典，展示了当前请求的每一个SQL以及执行时间，Django有一个swagger插件可以。</li>
+<li>debug</li>
 </ul>
+<p>可以使用这个变量来测试是否你正处于<code>DEBUG</code>模式</p>
+<ul>
+<li>sql_queries</li>
+</ul>
+<p>一个<code>{'sql': ..., 'time': ...}</code>的字典，展示了当前请求的每一个SQL以及执行时间，Django有一个swagger插件可以。</p>
 <h3 id="djangotemplatecontext_processorsi18n">django.template.context_processors.i18n</h3>
 <p>这个是国际化的一个组件。开启后，在模板中将可以使用一下变量</p>
 <ul>
@@ -77,22 +80,43 @@
 <h3 id="djangocontribmessagescontext_processorsmessages">django.contrib.messages.context_processors.messages</h3>
 <p>这个处理器开启后，每一个请求上下文都将包含下面两个变量</p>
 <ul>
-<li>
-<p>messages
-通过django的消息框架设置的messages的列表</p>
-</li>
-<li>
-<p>DEFAULT_MESSAGE_LEVELS
-一组消息级别名称到其数值的映射
-Level Constant|Value
----|---
-DEBUG|10
-INFO	|20
-SUCCESS	|25
-WARNING	|30
-ERROR|40</p>
-</li>
+<li>messages</li>
 </ul>
+<p>通过django的消息框架设置的messages的列表</p>
+<ul>
+<li>DEFAULT_MESSAGE_LEVELS</li>
+</ul>
+<p>一组消息级别名称到其数值的映射</p>
+<table>
+<thead>
+<tr>
+<th>Level Constant</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEBUG</td>
+<td>10</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>20</td>
+</tr>
+<tr>
+<td>SUCCESS</td>
+<td>25</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td>30</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>40</td>
+</tr>
+</tbody>
+</table>
 ]]></content>
     </entry>
     <entry>
