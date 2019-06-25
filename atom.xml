@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-06-24T02:02:55.490Z</updated>
+    <updated>2019-06-25T16:34:00.847Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -32,13 +32,13 @@
 <h3 id="djangocontribauthcontext_processorsauth">django.contrib.auth.context_processors.auth</h3>
 <p>如果这个处理器开启了，每一个请求上下文都将下面的变量：</p>
 <ul>
-<li>user</li>
+<li><code>user</code></li>
 </ul>
-<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 {{ user.username }}调用</p>
+<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 <code>{{ user.username }}</code>调用</p>
 <ul>
-<li>perms</li>
+<li><code>perms</code></li>
 </ul>
-<p>当前登陆用户的所有实例。可以在模板中通过{{ perms.models_name.permission_name }}调用</p>
+<p>当前登陆用户的所有实例。可以在模板中通过<code>{{ perms.models_name.permission_name }}</code>调用</p>
 <h3 id="djangotemplatecontext_processorsdebug">django.template.context_processors.debug</h3>
 <p>如果这个选项开启了，每一个请求上下文都将包含下面两个变量。但是只有你的<code>DEBUG</code>设置为<code>True</code>,而且请求的IP地址（<code>request.META['REMOTE_ADDR']</code>）在<code>INTERNAL_IPS</code>设置的列表中：</p>
 <ul>
