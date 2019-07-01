@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-06-25T16:34:00.847Z</updated>
+    <updated>2019-07-01T07:36:00.215Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -32,9 +32,9 @@
 <h3 id="djangocontribauthcontext_processorsauth">django.contrib.auth.context_processors.auth</h3>
 <p>如果这个处理器开启了，每一个请求上下文都将下面的变量：</p>
 <ul>
-<li><code>user</code></li>
+<li><strong>user</strong></li>
 </ul>
-<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 <code>{{ user.username }}</code>调用</p>
+<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 **{{ user.username }}**调用</p>
 <ul>
 <li><code>perms</code></li>
 </ul>
@@ -70,7 +70,7 @@
 <li>STATIC_URL</li>
 </ul>
 <h3 id="djangotemplatecontext_processorscsrf">django.template.context_processors.csrf</h3>
-<p>这个处理器提供了<code>csrf_token</code>模板tag需要的token，用户避免跨站请求攻击</p>
+<p>这个处理器提供了<strong>csrf_token</strong>模板tag需要的token，用户避免跨站请求攻击</p>
 <h3 id="djangotemplatecontext_processorsrequest">django.template.context_processors.request</h3>
 <p>这个处理器开启后，每一个处理器上下文都将包含一个<code>request</code>变量，就是当前的<code>HttpRequest</code></p>
 <ul>
