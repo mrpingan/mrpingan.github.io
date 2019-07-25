@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-07-25T07:08:19.584Z</updated>
+    <updated>2019-07-25T07:10:06.854Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -18,13 +18,10 @@
         <updated>2019-06-23T13:48:11.000Z</updated>
         <content type="html"><![CDATA[<h1 id="context_processors"><code>context_processors</code></h1>
 <p>从字面上理解为上下文，会将请求对象作为参数并以字典的方式合并到context中返回。比如，使用<code>render</code>函数的时候，就需要返回context，有了<code>context_processors</code>,就可以不用再去给模板传递过多的参数。在默认生成的配置文件<code>settings.py</code>中，默认模板引擎包含以下上下文处理器：</p>
-<pre><code class="language-python">[
-		'django.template.context_processors.debug',
-    'django.template.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-]
-
+<pre><code class="language-python">['django.template.context_processors.debug',
+  'django.template.context_processors.request',
+  'django.contrib.auth.context_processors.auth',
+  'django.contrib.messages.context_processors.messages',]
 </code></pre>
 <p>除此之外，请求上下文默认开启<code>django.template.context_processors.csrf</code>，这是为了安全考虑，而且已经硬编码了，不能在<code>context_processors</code>中关闭。这就是为什么我们可以在模板中直接使用<code>csrf_token</code>的原因</p>
 <p>每一个处理器有顺序。这意味着，如果一个处理器添加了一个变量到上下文，第二个处理器也添加了一个同名的变量到上下文，这样，第二个添加的变量的值会覆盖第一个。</p>
@@ -34,7 +31,7 @@
 <ul>
 <li><strong>user</strong></li>
 </ul>
-<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 ** user.username **调用</p>
+<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 <strong>user.username</strong>调用</p>
 <ul>
 <li><code>perms</code></li>
 </ul>
