@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-07-25T07:10:06.854Z</updated>
+    <updated>2019-07-25T07:37:48.504Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -16,7 +16,8 @@
         <link href="https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu">
         </link>
         <updated>2019-06-23T13:48:11.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="context_processors"><code>context_processors</code></h1>
+        <content type="html"><![CDATA[<p>[TOC]</p>
+<h1 id="context_processors"><code>context_processors</code></h1>
 <p>从字面上理解为上下文，会将请求对象作为参数并以字典的方式合并到context中返回。比如，使用<code>render</code>函数的时候，就需要返回context，有了<code>context_processors</code>,就可以不用再去给模板传递过多的参数。在默认生成的配置文件<code>settings.py</code>中，默认模板引擎包含以下上下文处理器：</p>
 <pre><code class="language-python">['django.template.context_processors.debug',
   'django.template.context_processors.request',
