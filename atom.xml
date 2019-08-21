@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-08-21T07:20:04.451Z</updated>
+    <updated>2019-08-21T08:56:46.492Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -24,30 +24,28 @@
 </ul>
 <h3 id="ldap设置">ldap设置</h3>
 <p>ldap中设置了两个组jenkins-admin、jenkins-user，分别用来在Jenkins中配置不同的权限的。<br>
-<img src="https://mrpingan.github.io/post-images/1566369885810.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1566377435268.png" alt=""><br>
 所有的用户都存在于ou=People叶子中的节点，所有的组都存在于ou=Groups中的节点，比如这儿我就加了一个jenkins节点同样是ou对象，因为我还要在下面增加groupOfNames的组对象，这样的好处是groupOfNames可以增加成员<br>
-<img src="https://mrpingan.github.io/post-images/1566370072535.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1566377641597.png" alt=""><br>
 比如，这儿我就增加了ou=People中的叶子节点</p>
 <h3 id="jenkins设置">jenkins设置</h3>
-<p>如果通过管理员账号登录jenkins，可以看到这个选项<br>
-<img src="https://mrpingan.github.io/post-images/1566370234018.png" alt=""><br>
-接下来，选择<code>LDAP</code><br>
-<img src="https://mrpingan.github.io/post-images/1566370288286.png" alt=""></p>
+<p>如果通过管理员账号登录jenkins，可以看到这个选项</p>
+<p>接下来，选择<code>LDAP</code><br>
+<img src="https://mrpingan.github.io/post-images/1566377699539.png" alt=""></p>
 <p>填入配置，我的配置如下：<br>
-<img src="https://mrpingan.github.io/post-images/1566370486077.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1566377716964.png" alt=""><br>
 填写完成后，可以验证一下<br>
-<img src="https://mrpingan.github.io/post-images/1566370525027.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1566370538519.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1566370564558.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1566377732941.png" alt=""></p>
+<p><img src="https://mrpingan.github.io/post-images/1566377752076.png" alt=""><br>
 注意这儿的用户名只需要填写<code>User search filter</code>填写cn的值即可，因为我的dn为：cn=pingqiangqiang,ou=People,dc=ping,dc=cn<br>
 所以这儿需要填写 cn={0},如果你的dn为uid=pingqiangqiang,ou=People,dc=ping,dc=cn，则<code>User search filter</code>需要填写uid={0},然后通过pingqiangqiang去验证。如果需要通过邮箱验证，则<code>User search filter</code>需要填写mail={0}。</p>
-<p><img src="https://mrpingan.github.io/post-images/1566370776139.png" alt=""><br>
+<p><img src="https://mrpingan.github.io/post-images/1566377766023.png" alt=""><br>
 如果测试通过，则会显示Authentication: successful之类的信息。</p>
 <h4 id="jenkins配置权限">Jenkins配置权限</h4>
 <p>还记得我们之前创建的两个组么，jenkins-admin、jenkins-user<br>
 在我的ldap中，cn=pingqiangqiang 这个用户属于 jenkins-admin组，cn=test 用户属于 jenkins-user 组<br>
 把页面下拉，可以看到 授权策略 现象，点击 安全矩阵 ，然后就可以添加对应的组来对不同的组来授权，组内的成员也会继承组的权限。<br>
-<img src="https://mrpingan.github.io/post-images/1566370918494.png" alt=""></p>
+<img src="https://mrpingan.github.io/post-images/1566377786644.png" alt=""></p>
 ]]></content>
     </entry>
     <entry>
