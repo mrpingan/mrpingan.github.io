@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-08-29T14:59:41.687Z</updated>
+    <updated>2019-08-29T15:02:23.346Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,44 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[maven打包栈溢出的问题]]></title>
+        <id>https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti</id>
+        <link href="https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti">
+        </link>
+        <updated>2019-08-29T15:01:36.000Z</updated>
+        <content type="html"><![CDATA[<p>今天使用<code>mvn</code>打包Java项目的时候，出现了栈溢出，部分错误日志如下：</p>
+<pre><code>Exception in thread &quot;main&quot; java.lang.StackOverflowError
+	at java.util.regex.Pattern$Branch.match(Pattern.java:4502)
+	at java.util.regex.Pattern$GroupHead.match(Pattern.java:4556)
+	at java.util.regex.Pattern$Loop.match(Pattern.java:4683)
+	at java.util.regex.Pattern$GroupTail.match(Pattern.java:4615)
+	at java.util.regex.Pattern$BranchConn.match(Pattern.java:4466)
+	at java.util.regex.Pattern$CharProperty.match(Pattern.java:3694)
+	at java.util.regex.Pattern$Branch.match(Pattern.java:4502)
+	at java.util.regex.Pattern$GroupHead.match(Pattern.java:4556)
+</code></pre>
+<p>解决方法：<br>
+调整<code>maven</code>的栈大小<br>
+通过<code>which mvn</code>找到<code>mvn</code>命令</p>
+<pre><code>root@saas3.0_jumper:~# which mvn
+/usr/local/maven/bin/mvn
+</code></pre>
+<p>编辑<code>/usr/local/maven/bin/mvn</code>,在文件开头添加<code>MAVEN_OPTS</code>环境变量，</p>
+<pre><code># -----------------------------------------------------------------------------
+# Apache Maven Startup Script
+#
+# Environment Variable Prerequisites
+#
+#   JAVA_HOME       Must point at your Java Development Kit installation.
+#   MAVEN_OPTS      (Optional) Java runtime options used when Maven is executed.
+#   MAVEN_SKIP_RC   (Optional) Flag to disable loading of mavenrc files.
+# -----------------------------------------------------------------------------
+MAVEN_OPTS=&quot;-Xss10240k&quot;
+</code></pre>
+<p>再次打包，成功。如果这个值还是提示栈溢出的话，可以考虑继续调整Xss的大小，或者在代码层面找原因。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[jenkins 连接ldap]]></title>
         <id>https://mrpingan.github.io/post/jenkins-lian-jie-ldap</id>
