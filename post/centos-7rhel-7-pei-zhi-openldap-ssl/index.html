@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Centos 7/RHEL 7配置OpenLDAP SSL | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1567858017417">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrpingan.github.io">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1567858017417" class="site-logo">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Centos 7/RHEL 7配置OpenLDAP SSL</h2>
+            <div class="post-date">2019-09-07</div>
+            
+            <div class="post-content">
+              <h1 id="预先准备">预先准备</h1>
+<p>在<code>/etc/hosts</code>中添加一条LDAP服务端主机域名映射记录</p>
+<pre><code>192.168.33.11 server.itzgeek.local server
+</code></pre>
+<h1 id="创建-ldap-证书">创建 LDAP 证书</h1>
+<h2 id="自签名证书">自签名证书</h2>
+<p>为LDAP服务端创建一个自签名证书,下面的命令将会在<code>/etc/openldap/certs/</code>生成证书和私钥</p>
+<pre><code>openssl req -new -x509 -nodes -out /etc/openldap/certs/itzgeekldap.crt -keyout /etc/openldap/certs/itzgeekldap.key -days 1460
+</code></pre>
+<p>输出内容：</p>
+<pre><code>Generating a 2048 bit RSA private key
+.................................................................................+++
+...................................+++
+writing new private key to '/etc/openldap/certs/itzgeekldap.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:shenzhen
+Locality Name (eg, city) [Default City]:shenzhen
+Organization Name (eg, company) [Default Company Ltd]:ITzGeek
+Organizational Unit Name (eg, section) []:IT Infra
+Common Name (eg, your name or your server's hostname) []:server.itzgeek.local
+Email Address []:admin@itzgeek.com
+</code></pre>
+<p>设置权限</p>
+<pre><code>chown -R ldap:ldap /etc/openldap/certs/itzgeek*
+</code></pre>
+<p>查看创建的证书和私钥</p>
+<pre><code>[root@server openldap]# ll /etc/openldap/certs/itz*
+-rw-r--r--. 1 root root 1456 Sep  7 09:08 /etc/openldap/certs/itzgeekldap.crt
+-rw-r--r--. 1 root root 1704 Sep  7 09:08 /etc/openldap/certs/itzgeekldap.key
+</code></pre>
+<p>创建<code>certs.ldif</code>配置LDAP使用自签名证书</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/certs/itzgeekldap.crt
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/certs/itzgeekldap.key
+</code></pre>
+<p>刷新配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
+</code></pre>
+<p>验证配置：</p>
+<pre><code>slaptest -u
+</code></pre>
+<p>配置正确显示如下：</p>
+<pre><code>config file testing succeeded
+</code></pre>
+<h1 id="自定义ca签名证书">自定义CA签名证书</h1>
+<p>创建根私钥</p>
+<pre><code>cd  /etc/openldap/certs/
+openssl genrsa -out itzgeekrootCA.key 2048
+</code></pre>
+<p>创建自签名根证书</p>
+<pre><code>openssl req -x509 -new -nodes -key itzgeekrootCA.key -sha256 -days 1024 -out itzgeekrootCA.pem
+</code></pre>
+<p>输入信息如下：</p>
+<pre><code>You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:shenzhen
+Locality Name (eg, city) [Default City]:shenzhen
+Organization Name (eg, company) [Default Company Ltd]:ITzGeek
+Organizational Unit Name (eg, section) []:IT Infra
+Common Name (eg, your name or your server's hostname) []:ITzGeek Root CA
+Email Address []:admin@itzgeek.com
+</code></pre>
+<p>LDAP服务端创建私钥</p>
+<pre><code>openssl genrsa -out itzgeekldap.key 2048
+</code></pre>
+<p>有了私钥之后，就可以创建一个csr(certificate signing request)文件</p>
+<pre><code>openssl req -new -key itzgeekldap.key -out itzgeekldap.csr
+</code></pre>
+<p>输出结果如下：</p>
+<pre><code>You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:shenzhen
+Locality Name (eg, city) [Default City]:shenzhen
+Organization Name (eg, company) [Default Company Ltd]:ITzGeek
+Organizational Unit Name (eg, section) []:IT Infra
+Common Name (eg, your name or your server's hostname) []:server.itzgeek.local
+Email Address []:admin@itzgeek.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</code></pre>
+<p>使用用户根CA签名一个CSR</p>
+<pre><code>openssl x509 -req -in itzgeekldap.csr -CA itzgeekrootCA.pem -CAkey itzgeekrootCA.key -CAcreateserial -out itzgeekldap.crt -days 1460 -sha256
+</code></pre>
+<p>设置权限</p>
+<pre><code>chown -R ldap:ldap /etc/openldap/certs/itzgeek*
+</code></pre>
+<p>查看证书文件</p>
+<pre><code>-rw-r--r--. 1 ldap ldap 1334 Sep  7 11:23 /etc/openldap/certs/itzgeekldap.crt
+-rw-r--r--. 1 ldap ldap 1074 Sep  7 11:22 /etc/openldap/certs/itzgeekldap.csr
+-rw-r--r--. 1 ldap ldap 1675 Sep  7 11:20 /etc/openldap/certs/itzgeekldap.key
+-rw-r--r--. 1 ldap ldap 1679 Sep  7 11:17 /etc/openldap/certs/itzgeekrootCA.key
+-rw-r--r--. 1 ldap ldap 1444 Sep  7 11:18 /etc/openldap/certs/itzgeekrootCA.pem
+-rw-r--r--. 1 ldap ldap   17 Sep  7 11:23 /etc/openldap/certs/itzgeekrootCA.srl
+</code></pre>
+<p>创建certs.ldif文件来配置LDAP</p>
+<pre><code>vi certs.ldif
+</code></pre>
+<p>文件内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: /etc/openldap/certs/itzgeekrootCA.pem
+-
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/certs/itzgeekldap.crt
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/certs/itzgeekldap.key
+</code></pre>
+<p>应用配置文件</p>
+<pre><code>ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
+</code></pre>
+<p>输出如下：</p>
+<pre><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &quot;cn=config&quot;
+
+</code></pre>
+<h1 id="配置openldap-ssl">配置OpenLDAP SSL</h1>
+<p>编辑<code>/etc/sysconfig/slapd</code>,增加<code>ldaps:///</code></p>
+<pre><code>SLAPD_URLS=&quot;ldapi:/// ldap:/// ldaps:///&quot;
+</code></pre>
+<p>重启服务</p>
+<pre><code>systemctl restart slapd
+</code></pre>
+<p>查看启动端口</p>
+<pre><code>tcp    LISTEN     0      128       *:636                   *:*                   users:((&quot;slapd&quot;,pid=28160,fd=10))
+tcp    LISTEN     0      128      :::636                  :::*                   users:((&quot;slapd&quot;,pid=28160,fd=11))
+</code></pre>
+<p>636是OpenLDAP ssl端口。</p>
+<h1 id="openldap客户端配置ssl">OpenLDAP客户端配置SSL</h1>
+<p>安装软件包</p>
+<pre><code>yum install -y openldap-clients nss-pam-ldapd
+</code></pre>
+<p>执行<code>authconfig</code>命令将客户端机器注册到服务端</p>
+<pre><code>authconfig --enableldap --enableldapauth --ldapserver=ldaps://server.itzgeek.local --ldapbasedn=&quot;dc=itzgeek,dc=local&quot; --enablemkhomedir --disableldaptls --update
+</code></pre>
+<h2 id="客户端配置">客户端配置</h2>
+<p>编辑<code>nslcd.conf</code>配置文件</p>
+<pre><code>	vi /etc/nslcd.conf
+</code></pre>
+<p>增加一行</p>
+<pre><code>tls_reqcert allow
+</code></pre>
+<p>拷贝LDAP服务端的CA公钥到客户端的<code>/etc/openldap/cacerts</code>目录中</p>
+<pre><code>cd /etc/openldap/cacerts/
+scp -pr 192.168.33.11:/etc/openldap/certs/itzgeekrootCA.pem /etc/openldap/cacerts
+</code></pre>
+<p>为CA证书创建hash值</p>
+<pre><code>/etc/pki/tls/misc/c_hash /etc/openldap/cacerts/itzgeekrootCA.pem
+</code></pre>
+<p>输出：</p>
+<pre><code>1a981562.0 =&gt; /etc/openldap/cacerts/itzgeekrootCA.pem
+</code></pre>
+<p>创建一个软连接</p>
+<pre><code>ln -s /etc/openldap/cacerts/itzgeekrootCA.pem 1a981562.0
+</code></pre>
+<p>重启LDAP客户端服务</p>
+<pre><code>systemctl restart nslcd
+</code></pre>
+<h1 id="验证ldap登录">验证LDAP登录</h1>
+<p>使用<code>getent</code>命令来获取LDAP服务端的条目</p>
+<pre><code>getent passwd raj
+</code></pre>
+<p>输出：</p>
+<pre><code>raj:x:9999:100:Raj [Admin (at) ITzGeek]:/home/raj:/bin/bash
+</code></pre>
+<p>登录：<br>
+<img src="https://mrpingan.github.io/post-images/1567857602492.png" alt=""><br>
+查看日志TLS建立成功<br>
+<img src="https://mrpingan.github.io/post-images/1567858011786.png" alt=""></p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrpingan.github.io/post/ldap-ssl-pei-zhi">
+                  <h3 class="post-title">
+                    Centos7/RHEL 7 LDAP 配置
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

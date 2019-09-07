@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Centos7/RHEL 7 LDAP 配置 | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1567858017417">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrpingan.github.io">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1567858017417" class="site-logo">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Centos7/RHEL 7 LDAP 配置</h2>
+            <div class="post-date">2019-09-07</div>
+            
+            <div class="post-content">
+              <h1 id="环境">环境</h1>
+<table>
+<thead>
+<tr>
+<th>hostname</th>
+<th>ip</th>
+<th>os</th>
+<th>purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>server.itzgeek.local</td>
+<td>192.168.33.11</td>
+<td>centos 7</td>
+<td>服务端</td>
+</tr>
+<tr>
+<td>client.itzgeek.local</td>
+<td>192.168.33.12</td>
+<td>centos 7</td>
+<td>客户端</td>
+</tr>
+</tbody>
+</table>
+<h1 id="要求">要求</h1>
+<p>确认LDAP服务端server.itzgeek.local(192.168.33.11)和LDAP客户端client.itzgeek.local(192.168.33.12)都可以ping通<br>
+保证每一台服务器的hosts文件中都包含</p>
+<pre><code>192.168.33.12   client.itzgeek.local    client
+192.168.33.11   server.itzgeek.local    server
+</code></pre>
+<h1 id="安装ldap包">安装LDAP包</h1>
+<p>安装LDAP包，openldap-servers是服务端的包，openldap-clients是客户端<br>
+<code>yum -y install openldap compat-openldap openldap-clients openldap-servers openldap-servers-sql openldap-devel</code></p>
+<h2 id="启动ldap-server并加入自启动">启动LDAP server并加入自启动</h2>
+<pre><code>systemctl start slapd
+systemctl enable slapd
+</code></pre>
+<p>查看LDAP是否启动</p>
+<pre><code>ss -antup | grep -i 389
+</code></pre>
+<p>输出如下表示端口已启动</p>
+<pre><code>tcp    LISTEN     0      128       *:389                   *:*                   users:((&quot;slapd&quot;,pid=5740,fd=8))
+tcp    LISTEN     0      128      :::389                  :::*                   users:((&quot;slapd&quot;,pid=5740,fd=9))
+</code></pre>
+<h2 id="设置管理员密码">设置管理员密码</h2>
+<p>生成ssha加密密码,比如这儿的密码为admin</p>
+<pre><code>slappasswd -h {SSHA} -s admin
+</code></pre>
+<p>输出：</p>
+<pre><code>{SSHA}nU4sM/uweUR3xhk1A521Fs5DlAO/gEbx
+</code></pre>
+<h2 id="配置ldap服务端">配置LDAP服务端</h2>
+<p>OpenLDAP服务端配置文件放在<code>/etc/openldap/slapd.d/</code>。修改一下<code>olcSuffix</code>和<code>olcRootDN</code>变量。<br>
+<code>olcSuffix</code>    ——   数据库后缀，它是LDAP服务器提供信息的域名。简单来说，它应该更改为域名。<br>
+<code>olcRootDN</code> ——   一般指的是root用户，具有所有访问权限的用户<br>
+<code>olcRootPW</code> ——  RootDN的密码</p>
+<blockquote>
+<p>以上的变量需要在<code>/etc/openldap/slapd.d/cn=config/olcDatabase={2}hdb.ldif</code>中更新，不建议手动修改这个文件，所有的变更都应该创建一个<code>.ldif</code>文件，使用ldap的命令去执行</p>
+</blockquote>
+<pre><code>vi db.ldif
+</code></pre>
+<p>添加下面的内容：</p>
+<pre><code>dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: dc=itzgeek,dc=local
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootDN
+olcRootDN: cn=admin,dc=itzgeek,dc=local
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootPW
+olcRootPW: {SSHA}nU4sM/uweUR3xhk1A521Fs5DlAO/gEbx
+</code></pre>
+<p>把配置发送给服务端，不需重启即时生效</p>
+<pre><code>ldapmodify -Y EXTERNAL  -H ldapi:/// -f db.ldif
+</code></pre>
+<p>输出下面内容表示成功：</p>
+<pre><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &quot;olcDatabase={2}hdb,cn=config&quot;
+
+modifying entry &quot;olcDatabase={2}hdb,cn=config&quot;
+
+modifying entry &quot;olcDatabase={2}hdb,cn=config&quot;
+</code></pre>
+<p>刚才的文件中我们设置了basedn,rootdn,rootpassword，现在我们设置一下ACL权限</p>
+<pre><code>vi monitor.ldif
+</code></pre>
+<p>使用下面的配置：</p>
+<pre><code>dn: olcDatabase={1}monitor,cn=config
+changetype: modify
+replace: olcAccess
+olcAccess: {0}to * by dn.base=&quot;gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth&quot; read by dn.base=&quot;cn=admin,dc=itzgeek,dc=local&quot; read by * none
+</code></pre>
+<p>同样的，也要发送配置给服务端</p>
+<pre><code>ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif
+</code></pre>
+<p>输出如下，表示成功：</p>
+<pre><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &quot;olcDatabase={1}monitor,cn=config&quot;
+</code></pre>
+<h1 id="设置ldap数据库">设置LDAP数据库</h1>
+<p>拷贝数据库样本配置文件到<code>/var/lib/ldap</code>,更新文件权限</p>
+<pre><code>cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+chown ldap:ldap /var/lib/ldap/*
+</code></pre>
+<p>增加inetorgperson LDAP schemas，但是inetorgperson依赖cosine和nis LDAP schemas，所以要先安装cosine和nis LDAP schemas</p>
+<pre><code>ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
+ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif 
+ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
+</code></pre>
+<p>配置基本结构配置文件base.ldif</p>
+<pre><code>dn: dc=itzgeek,dc=local
+dc: itzgeek
+objectClass: top
+objectClass: domain
+
+dn: cn=admin ,dc=itzgeek,dc=local
+objectClass: organizationalRole
+cn: admin
+description: LDAP Manager
+
+dn: ou=People,dc=itzgeek,dc=local
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Group,dc=itzgeek,dc=local
+objectClass: organizationalUnit
+ou: Group
+</code></pre>
+<p>生成目录结构：</p>
+<pre><code>ldapadd -x -W -D &quot;cn=admin,dc=itzgeek,dc=local&quot; -f base.ldif
+</code></pre>
+<p>要输入<code>cn=admin,dc=itzgeek,dc=local</code>的密码才可以</p>
+<p>输出内容：</p>
+<pre><code>Enter LDAP Password:
+adding new entry &quot;dc=itzgeek,dc=local&quot;
+
+adding new entry &quot;cn=admin ,dc=itzgeek,dc=local&quot;
+
+adding new entry &quot;ou=People,dc=itzgeek,dc=local&quot;
+
+adding new entry &quot;ou=Group,dc=itzgeek,dc=local&quot;
+</code></pre>
+<p>使用<code>JXplorer</code>查看目录树<br>
+<img src="https://mrpingan.github.io/post-images/1567842998859.png" alt=""></p>
+<h1 id="创建ldap用户">创建LDAP用户</h1>
+<pre><code>vi raj.ldif
+</code></pre>
+<p>写入以下内容：</p>
+<pre><code>dn: uid=raj,ou=People,dc=itzgeek,dc=local
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: raj
+uid: raj
+uidNumber: 9999
+gidNumber: 100
+homeDirectory: /home/raj
+loginShell: /bin/bash
+gecos: Raj [Admin (at) ITzGeek]
+userPassword: {crypt}x
+shadowLastChange: 17058
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+</code></pre>
+<p>把配置写入LDAP服务端</p>
+<pre><code>ldapadd -x -W -D &quot;cn=admin,dc=itzgeek,dc=local&quot; -f raj.ldif
+</code></pre>
+<p>输出如下：</p>
+<pre><code>Enter LDAP Password:
+adding new entry &quot;uid=raj,ou=People,dc=itzgeek,dc=local&quot;
+</code></pre>
+<p>给<code>raj</code>用户设置一个密码</p>
+<pre><code>ldappasswd -s password123 -W -D &quot;cn=admin,dc=itzgeek,dc=local&quot; -x &quot;uid=raj,ou=People,dc=itzgeek,dc=local&quot;
+</code></pre>
+<p>-s 给指定用户指定密码<br>
+-x 指定配置密码用户<br>
+-D 指定可以修改密码的dn<br>
+验证<code>raj</code>用户：</p>
+<pre><code>ldapsearch -x cn=raj -b dc=itzgeek,dc=local
+</code></pre>
+<p>输出如下：</p>
+<pre><code># extended LDIF
+#
+# LDAPv3
+# base &lt;dc=itzgeek,dc=local&gt; with scope subtree
+# filter: cn=raj
+# requesting: ALL
+#
+
+# raj, People, itzgeek.local
+dn: uid=raj,ou=People,dc=itzgeek,dc=local
+objectClass: top
+objectClass: account
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: raj
+uid: raj
+uidNumber: 9999
+gidNumber: 100
+homeDirectory: /home/raj
+loginShell: /bin/bash
+gecos: Raj [Admin (at) ITzGeek]
+shadowLastChange: 17058
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+userPassword:: e1NTSEF9SmwvcUZRSzAzRVV0dmZ0UXNPYU9zZjdvdWdDRGR2dlA=
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+</code></pre>
+<p>删除一个条目：</p>
+<pre><code>ldapdelete -W -D &quot;cn=admin,dc=itzgeek,dc=local&quot; &quot;uid=raj,ou=People,dc=itzgeek,dc=local&quot;
+</code></pre>
+<h1 id="防火墙">防火墙</h1>
+<p>如果开启了防火墙，要在防火墙上开启端口TCP(389)</p>
+<pre><code>firewall-cmd --permanent --add-service=ldap
+firewall-cmd --reload
+</code></pre>
+<h1 id="开启ldap日志">开启LDAP日志</h1>
+<p>pass</p>
+<h1 id="ldap客户端配置">LDAP客户端配置</h1>
+<p>在客户端机器上安装必要的包</p>
+<pre><code>yum install -y openldap-clients nss-pam-ldapd
+</code></pre>
+<p>执行下面的命令将客户端注册到LDAP服务端上,192.168.33.11是LDAP服务端的IP地址</p>
+<pre><code>authconfig --enableldap --enableldapauth --ldapserver=192.168.33.11 --ldapbasedn=&quot;dc=itzgeek,dc=local&quot; --enablemkhomedir --update
+</code></pre>
+<p>重启LDAP客户端服务</p>
+<pre><code>systemctl restart  nslcd
+</code></pre>
+<h1 id="验证ldap登录">验证LDAP登录</h1>
+<p>使用<code>getent</code>命令来从LDAP服务端获取条目</p>
+<pre><code>getent passwd raj
+</code></pre>
+<p>输出：</p>
+<pre><code>raj:x:9999:100:Raj [Admin (at) ITzGeek]:/home/raj:/bin/bash
+</code></pre>
+<p>为了验证，在客户端机器上使用LDAP用户<code>raj</code>登录</p>
+<pre><code>ssh raj@192.168.33.12
+</code></pre>
+<p><img src="https://mrpingan.github.io/post-images/1567846300534.png" alt=""><br>
+登录成功之后，就会创建一个家目录，由于我是第二次登录，所以看不到创建家目录的提示信息。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://mrpingan.github.io/tag/v9WOQbZWI6" class="tag">
+                    ldap
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrpingan.github.io/post/confluence-jin-yong-wang-ji-mi-ma-gong-neng">
+                  <h3 class="post-title">
+                    confluence禁用忘记密码功能
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
