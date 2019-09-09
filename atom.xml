@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-09-07T12:07:02.515Z</updated>
+    <updated>2019-09-09T09:57:23.788Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,35 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[Jxplorer连接LDAP]]></title>
+        <id>https://mrpingan.github.io/post/jxplorer-lian-jie-ldap</id>
+        <link href="https://mrpingan.github.io/post/jxplorer-lian-jie-ldap">
+        </link>
+        <updated>2019-09-08T05:20:46.000Z</updated>
+        <content type="html"><![CDATA[<p><code>Jxplorer</code>是JAVA连接LDAP的客户端，支持多种连接SSL、SASL，同时也支持很多平台。官网下载地址：http://jxplorer.org/downloads/users.html。</p>
+<h1 id="非安全连接">非安全连接</h1>
+<p>如果LDAP服务端未开启TLS，此时建立的连接是非安全连接，使用的端口是389.<br>
+<img src="https://mrpingan.github.io/post-images/1567920506007.png" alt=""><br>
+填写对应的信息，就可以连接上了</p>
+<h1 id="安全连接">安全连接</h1>
+<p>LDAP使用的是SSL，即重新开启一个SSL端口来建立安全通道，不过这种方式已经被淘汰。取而代之的是STARTTLS，这种方式和389复用同一个通道，不过传输的数据都是加密的。<br>
+我这儿使用的是SSL，而且使用的自签名CA证书。并未使用STARTTLS。</p>
+<h2 id="导入ca证书">导入CA证书</h2>
+<p>选择&quot;安全&quot; —— &quot;信任的服务器及CA&quot;<br>
+<img src="https://mrpingan.github.io/post-images/1567920720636.png" alt=""><br>
+选择&quot;新增凭证&quot;<br>
+<img src="https://mrpingan.github.io/post-images/1567920784200.png" alt=""><br>
+选择指定的CA证书，并为CA证书指定一个名称<br>
+<img src="https://mrpingan.github.io/post-images/1567920819137.png" alt=""><br>
+还需要输入一个密码，默认的密码是&quot;changeit&quot;<br>
+<img src="https://mrpingan.github.io/post-images/1567920864163.png" alt=""><br>
+点击&quot;确认&quot;之后就可以正常导入了</p>
+<p>新建一个连接<br>
+<img src="https://mrpingan.github.io/post-images/1567920948221.png" alt=""><br>
+填写对应的信息，ssl的方式需要修改端口为636。如果LDAP使用的是STARTTLS的方式，则端口依然是389。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Centos 7/RHEL 7配置OpenLDAP SSL]]></title>
         <id>https://mrpingan.github.io/post/centos-7rhel-7-pei-zhi-openldap-ssl</id>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Ubuntu安装LDAP Server | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1568023021090">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrpingan.github.io">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1568023021090" class="site-logo">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Ubuntu安装LDAP Server</h2>
+            <div class="post-date">2019-09-09</div>
+            
+            <div class="post-content">
+              <h1 id="安装">安装</h1>
+<p>数据库后缀使用&quot;dc=dding,dc=net&quot;</p>
+<pre><code>apt install slapd ldap-utils
+</code></pre>
+<p>安装后会自动跳出页面要求输入<code>admin</code>密码，这儿先输入<code>admin</code>，之后还要配置<br>
+<img src="https://mrpingan.github.io/post-images/1568013256394.png" alt=""></p>
+<h2 id="重新配置ldap">重新配置ldap</h2>
+<pre><code>dpkg-reconfigure slapd
+</code></pre>
+<p><img src="https://mrpingan.github.io/post-images/1568015363684.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015397143.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015515557.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015527344.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015543529.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015563599.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015591682.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568015622116.png" alt=""><br>
+配置后之后就会启动，使用<code>Jxplorer</code>查看DIT<br>
+<img src="https://mrpingan.github.io/post-images/1568019006265.png" alt=""><br>
+在ubuntu系统的包中，一些常用的schema都已经有了，比如，cosine, nis, inetorgperson。core schema也是有的。</p>
+<h2 id="ldap结构">ldap结构</h2>
+<pre><code>root@client:/etc/ldap/slapd.d/cn=config# tree
+.
+├── cn=module{0}.ldif
+├── cn=schema
+│   ├── cn={0}core.ldif
+│   ├── cn={1}cosine.ldif
+│   ├── cn={2}nis.ldif
+│   └── cn={3}inetorgperson.ldif
+├── cn=schema.ldif
+├── olcBackend={0}hdb.ldif
+├── olcDatabase={0}config.ldif
+├── olcDatabase={-1}frontend.ldif
+└── olcDatabase={1}hdb.ldif
+
+1 directory, 10 files
+</code></pre>
+<p>查看DIT命令：</p>
+<pre><code>ldapsearch -x -LLL -H ldap:/// -b dc=dding,dc=net dn
+</code></pre>
+<p>输出如下：</p>
+<pre><code>dn: dc=dding,dc=net
+
+dn: cn=admin,dc=dding,dc=net
+
+</code></pre>
+<h2 id="配置日志">配置日志</h2>
+<p>为ldap开启日志功能，创建<code>log.ldif</code>，内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats
+</code></pre>
+<p>应用配置:</p>
+<pre><code>ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f logging.ldif
+</code></pre>
+<p>输出如下，表示成功：</p>
+<pre><code>modifying entry &quot;cn=config&quot;
+
+</code></pre>
+<p><code>stats</code>日志级别将会产生大量的日志，在生产环境中应该修改日志级别，减少大量日志的产生。在<code>stats</code>日志级别下，syslog引擎可能会丢日志</p>
+<pre><code>rsyslogd-2177: imuxsock lost 228 messages from pid 2547 due to rate-limiting
+</code></pre>
+<p>可以在<code>/etc/rsyslog.conf</code>修改syslog的配置</p>
+<pre><code># Disable rate limiting
+# (default is 200 messages in 5 seconds; below we make the 5 become 0)
+$SystemLogRateLimitInterval 0
+</code></pre>
+<p>然后重启rsyslog</p>
+<pre><code>systemctl restart syslog.service
+</code></pre>
+<h1 id="tls">TLS</h1>
+<p>使用TLS可以加密回话，SSL证书可以使用自签名或者第三方授权机构颁发，这儿我使用自签名</p>
+
+            </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
