@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-11-08T05:09:20.465Z</updated>
+    <updated>2019-11-08T05:12:06.075Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -172,6 +172,163 @@ olcDbIndex: entryCSN eq
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[ubuntu14安装FPM]]></title>
+        <id>https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm</id>
+        <link href="https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm">
+        </link>
+        <updated>2019-09-16T08:43:52.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="介绍">介绍</h1>
+<p>不同的linux发行版都有不同的包管理工具。例如，Fedora和Redhat都使用<code>.rpm</code>格式的包，Debian和Ubuntu使用<code>.deb</code>格式的包。这些包是不兼容的，而且要熟悉创建不同包的方式也很费时间。<br>
+为了最小化创建包的复杂度，我们可以使用<code>fpm</code>工具。使用<code>fpm</code>,你可以很容易的同时创建<code>.rpm</code>和<code>.deb</code>文件。是不是很酷！下面在<code>ubuntu 14</code>的环境演示。</p>
+<h1 id="安装fpm">安装fpm</h1>
+<p>fpm是ruby语言写的工具，所以要安装ruby环境</p>
+<pre><code>apt-get update
+apt-get install ruby-dev build-essential
+</code></pre>
+<p>查看ruby版本，如果版本低于2.0，安装fpm1.11.0的过程中将会报错</p>
+<pre><code>ruby -v
+</code></pre>
+<p>安装fpm</p>
+<pre><code>gem install fpm
+</code></pre>
+<p>安装完成后，检验fpm</p>
+<pre><code>fpm -help
+</code></pre>
+<pre><code>Intro:
+
+  This is fpm version 1.11.0
+
+  If you think something is wrong, it's probably a bug! :)
+  Please file these here: https://github.com/jordansissel/fpm/issues
+
+  You can find support on irc (#fpm on freenode irc) or via email with
+  fpm-users@googlegroups.com
+
+Loaded package types:
+...
+</code></pre>
+<h2 id="如果ruby版本低于20">如果ruby版本低于2.0</h2>
+<p>如果ruby版本低于2.0，需要安装高版本ruby。我们使用<code>rvm</code>工具去安装ruby高版本</p>
+<h3 id="安装rvm">安装rvm</h3>
+<p>参考rvm地址：<a href="http://rvm.io/">rvm官网</a><br>
+安装gpg2命令</p>
+<pre><code>apt-get install gnupg2
+</code></pre>
+<p>安装GPG 2公钥</p>
+<pre><code>gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+</code></pre>
+<p>安装rvm</p>
+<pre><code>\curl -sSL https://get.rvm.io | bash -s stable
+</code></pre>
+<p>输出如下：</p>
+<pre><code>Downloading https://github.com/rvm/rvm/archive/1.29.9.tar.gz
+Downloading https://github.com/rvm/rvm/releases/download/1.29.9/1.29.9.tar.gz.asc
+gpg: Signature made Wed 10 Jul 2019 08:31:02 AM UTC using RSA key ID 39499BDB
+gpg: Good signature from &quot;Piotr Kuczynski &lt;piotr.kuczynski@gmail.com&gt;&quot;
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 7D2B AF1C F37B 13E2 069D  6956 105B D0E7 3949 9BDB
+GPG verified '/usr/local/rvm/archives/rvm-1.29.9.tgz'
+Creating group 'rvm'
+Installing RVM to /usr/local/rvm/
+Installation of RVM in /usr/local/rvm/ is almost complete:
+
+  * First you need to add all users that will be using rvm to 'rvm' group,
+    and logout - login again, anyone using rvm will be operating with `umask u=rwx,g=rwx,o=rx`.
+
+  * To start using RVM you need to run `source /etc/profile.d/rvm.sh`
+    in all your open shell windows, in rare cases you need to reopen all shell windows.
+  * Please do NOT forget to add your users to the rvm group.
+     The installer no longer auto-adds root or users to the rvm group. Admins must do this.
+     Also, please note that group memberships are ONLY evaluated at login time.
+     This means that users must log out then back in before group membership takes effect!
+Thanks for installing RVM 🙏
+Please consider donating to our open collective to help us maintain RVM.
+
+👉  Donate: https://opencollective.com/rvm/donate
+</code></pre>
+<p>加载环境变量</p>
+<pre><code>source /usr/local/rvm/scripts/rvm
+</code></pre>
+<p>现在可以使用rvm命令了,查看可安装的ruby版本</p>
+<pre><code>rvm list known
+</code></pre>
+<p>安装ruby 2.3</p>
+<pre><code>rvm install 2.3
+</code></pre>
+<p>再通过<code>ruby -v</code>查看版本是否变为2.3</p>
+<h1 id="熟悉fpm基本功能">熟悉fpm基本功能</h1>
+<p>fpm 命令行的基本格式</p>
+<pre><code>fpm -s source_type -t target_type source_name_or_location
+</code></pre>
+<h2 id="把一个gem包转变为deb包">把一个gem包转变为deb包</h2>
+<p>bundler是一个常见的gem包</p>
+<pre><code>fpm -s gem -t deb bundler
+</code></pre>
+<pre><code>Debian packaging tools generally labels all files in /etc as config files, as mandated by policy, so fpm defaults to this behavior for deb packages. You can disable this default behavior with --deb-no-default-config-files flag {:level=&gt;:warn}
+Created package {:path=&gt;&quot;rubygem-bundler_2.0.2_all.deb&quot;}
+</code></pre>
+<p>再当前目录就可以看到生成了<code>rubygem-bundler_2.0.2_all.deb</code>安装包<br>
+看看安装会不会有问题<br>
+查看当前的gem列表</p>
+<pre><code>root@client:~# gem list
+
+*** LOCAL GEMS ***
+
+arr-pm (0.0.10)
+backports (3.15.0)
+bigdecimal (default: 1.2.8)
+bundler (default: 1.16.2)
+bundler-unload (1.0.2)
+cabin (0.9.0)
+childprocess (0.9.0)
+clamp (1.0.1)
+did_you_mean (1.0.0)
+dotenv (2.7.5)
+executable-hooks (1.5.0)
+ffi (1.11.1)
+fpm (1.11.0)
+gem-wrappers (1.4.0)
+insist (1.0.0)
+io-console (default: 0.4.5)
+io-like (0.3.0)
+...
+</code></pre>
+<p>可以看到bundler的版本是1.16.2，我们打包的版本是2.0.2<br>
+安装bundler</p>
+<pre><code>dpkg -i rubygem-bundler_2.0.2_all.deb
+</code></pre>
+<p>再次查看gem安装列表</p>
+<pre><code>root@client:~# gem list
+
+*** LOCAL GEMS ***
+
+arr-pm (0.0.10)
+backports (3.15.0)
+bigdecimal (default: 1.2.8)
+bundler (2.0.2, default: 1.16.2)
+bundler-unload (1.0.2)
+cabin (0.9.0)
+childprocess (0.9.0)
+clamp (1.0.1)
+did_you_mean (1.0.0)
+dotenv (2.7.5)
+executable-hooks (1.5.0)
+ffi (1.11.1)
+fpm (1.11.0)
+...
+</code></pre>
+<p>看到bundler的版本变为2.0.2了。<br>
+这是把gem包转变为deb包，属于包类型之间的转换</p>
+<h1 id="源格式和目标格式">源格式和目标格式</h1>
+<p>fpm支持下面的源格式:<br>
+dir、tar、gem、python、pear、cpan、zip、npm、osxpkg、empty、deb、rpm</p>
+<p>支持的目标格式：<br>
+deb、rpm、zip、tar、dir、sh、osxpkg、solaris、pkgin、puppet</p>
+<p><img src="https://mrpingan.github.io/post-images/1568727162483.png" alt=""></p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[查看发行版版本]]></title>
         <id>https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben</id>
         <link href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">
@@ -192,12 +349,67 @@ olcDbIndex: entryCSN eq
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[confluence用户数据迁移]]></title>
+        <id>https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi</id>
+        <link href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
+        </link>
+        <updated>2019-09-10T09:45:52.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="环境">环境</h1>
+<p>1、confluence版本：6.15.8<br>
+2、老账号：pingqiangqiang，组：ops，post：This My first Post<br>
+3、新账号：ping，组：none，post，无<br>
+4、达到目标：新账号：ping，组：ops，post：This My first Post</p>
+<h1 id="方案一">方案一</h1>
+<ul>
+<li>调整用户目录顺序,并禁用LDAP用户目录</li>
+</ul>
+<p><img src="https://mrpingan.github.io/post-images/1568116514235.png" alt=""><br>
+此时，confluence读取的用户数据都是本地目录数据，查看文档<br>
+<img src="https://mrpingan.github.io/post-images/1568116630879.png" alt=""><br>
+post的发布者还是老账号</p>
+<ul>
+<li>修改老账号的用户名为ping，并启动LDAP用户目录，调整用户目录顺序</li>
+</ul>
+<p><img src="https://mrpingan.github.io/post-images/1568116799748.png" alt=""><br>
+此时，查看文档<br>
+<img src="https://mrpingan.github.io/post-images/1568116820884.png" alt=""><br>
+post的发布者变成了新账号中的可见名<br>
+查看用户列表<br>
+<img src="https://mrpingan.github.io/post-images/1568116892133.png" alt=""><br>
+只有两个账号，老账号改了名字后，由于登录的时候，LDAP目录排在第一个，wiki先在LDAP中找到<code>ping</code>这个用户，于是认证成功可以登录。<br>
+查看所属组<br>
+<img src="https://mrpingan.github.io/post-images/1568117006765.png" alt=""><br>
+发现直接继承了老账号<code>ping</code>的所属组。这是因为，在LDAP配置中，我们没有使用LDAP里面的目录结构。组都在wiki中授权，而且，wiki把用户名当唯一标识符，所以任务两个账号是同一个账号。<br>
+目前测试，这种方案可行。</p>
+<h1 id="方案二">方案二</h1>
+<p>可参考连接：https://confluence.atlassian.com/confkb/how-to-merge-two-users-content-ownership-and-permissions-in-confluence-957149073.html</p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[confluence连接ldaps]]></title>
         <id>https://mrpingan.github.io/post/confluence-lian-jie-ldaps</id>
         <link href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">
         </link>
         <updated>2019-09-10T04:22:51.000Z</updated>
         <content type="html"><![CDATA[<p><img src="https://mrpingan.github.io/post-images/1568089430883.png" alt=""></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[LDAP ubuntu phpldapadmin]]></title>
+        <id>https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin</id>
+        <link href="https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin">
+        </link>
+        <updated>2019-09-08T05:54:11.000Z</updated>
+        <content type="html"><![CDATA[<p>https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-an-ubuntu-14-04-server</p>
+<h1 id="phpldapadmin连接ldaps">phpldapadmin连接ldaps</h1>
+<p>这儿的ssl证书是第三方授权的证书，phpldapadmin的配置文件如下</p>
+<pre><code class="language-php">$servers-&gt;setValue('server','name','My LDAP Server');
+$servers-&gt;setValue('server','host','ldaps://test-ldap.ping.net/');
+$servers-&gt;setValue('server','port',636);
+$servers-&gt;setValue('server','base',array('dc=ping,dc=net'));
+$servers-&gt;setValue('login','auth_type','session');
+$servers-&gt;setValue('login','bind_id','cn=admin,dc=ping,dc=net');
+</code></pre>
 ]]></content>
     </entry>
     <entry>
@@ -720,99 +932,6 @@ firewall-cmd --reload
 </code></pre>
 <p><img src="https://mrpingan.github.io/post-images/1567846300534.png" alt=""><br>
 登录成功之后，就会创建一个家目录，由于我是第二次登录，所以看不到创建家目录的提示信息。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[confluence禁用忘记密码功能]]></title>
-        <id>https://mrpingan.github.io/post/confluence-jin-yong-wang-ji-mi-ma-gong-neng</id>
-        <link href="https://mrpingan.github.io/post/confluence-jin-yong-wang-ji-mi-ma-gong-neng">
-        </link>
-        <updated>2019-09-04T04:36:56.000Z</updated>
-        <content type="html"><![CDATA[<p>禁用忘记密码功能很简单，只需要增加一个css就可以。<br>
-使用管理员登录<br>
-<img src="https://mrpingan.github.io/post-images/1567572057774.png" alt=""><br>
-增加样式</p>
-<pre><code>#forgot-password {
-    display:none;
-}
-</code></pre>
-<p>然后，在登录界面就看不到&quot;忘记密码&quot;的选项了 。其实只是在前端页面上隐藏了。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[maven打包栈溢出的问题]]></title>
-        <id>https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti</id>
-        <link href="https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti">
-        </link>
-        <updated>2019-08-29T15:01:36.000Z</updated>
-        <content type="html"><![CDATA[<p>今天使用<code>mvn</code>打包Java项目的时候，出现了栈溢出，部分错误日志如下：</p>
-<pre><code>Exception in thread &quot;main&quot; java.lang.StackOverflowError
-	at java.util.regex.Pattern$Branch.match(Pattern.java:4502)
-	at java.util.regex.Pattern$GroupHead.match(Pattern.java:4556)
-	at java.util.regex.Pattern$Loop.match(Pattern.java:4683)
-	at java.util.regex.Pattern$GroupTail.match(Pattern.java:4615)
-	at java.util.regex.Pattern$BranchConn.match(Pattern.java:4466)
-	at java.util.regex.Pattern$CharProperty.match(Pattern.java:3694)
-	at java.util.regex.Pattern$Branch.match(Pattern.java:4502)
-	at java.util.regex.Pattern$GroupHead.match(Pattern.java:4556)
-</code></pre>
-<p>解决方法：<br>
-调整<code>maven</code>的栈大小<br>
-通过<code>which mvn</code>找到<code>mvn</code>命令</p>
-<pre><code>root@saas3.0_jumper:~# which mvn
-/usr/local/maven/bin/mvn
-</code></pre>
-<p>编辑<code>/usr/local/maven/bin/mvn</code>,在文件开头添加<code>MAVEN_OPTS</code>环境变量，</p>
-<pre><code># -----------------------------------------------------------------------------
-# Apache Maven Startup Script
-#
-# Environment Variable Prerequisites
-#
-#   JAVA_HOME       Must point at your Java Development Kit installation.
-#   MAVEN_OPTS      (Optional) Java runtime options used when Maven is executed.
-#   MAVEN_SKIP_RC   (Optional) Flag to disable loading of mavenrc files.
-# -----------------------------------------------------------------------------
-MAVEN_OPTS=&quot;-Xss10240k&quot;
-</code></pre>
-<p>再次打包，成功。如果这个值还是提示栈溢出的话，可以考虑继续调整Xss的大小，或者在代码层面找原因。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[jenkins 连接ldap]]></title>
-        <id>https://mrpingan.github.io/post/jenkins-lian-jie-ldap</id>
-        <link href="https://mrpingan.github.io/post/jenkins-lian-jie-ldap">
-        </link>
-        <updated>2019-08-21T06:23:35.000Z</updated>
-        <content type="html"><![CDATA[<p>jenkins默认安装了ldap插件，通过ldap可以对用户进行授权。相比本地账户而言，更加方便，更加好管理。当用户离职后，直接在ldap中将这个用户删掉就可以了。<br>
-想要达到的目的：</p>
-<ul>
-<li>可以通过ldap用户认证</li>
-<li>只有指定的组可以登录Jenkins，不同的组拥有的权限不同</li>
-</ul>
-<h3 id="ldap设置">ldap设置</h3>
-<p>ldap中设置了两个组jenkins-admin、jenkins-user，分别用来在Jenkins中配置不同的权限的。<br>
-<img src="https://mrpingan.github.io/post-images/1566377435268.png" alt=""><br>
-所有的用户都存在于ou=People叶子中的节点，所有的组都存在于ou=Groups中的节点，比如这儿我就加了一个jenkins节点同样是ou对象，因为我还要在下面增加groupOfNames的组对象，这样的好处是groupOfNames可以增加成员<br>
-<img src="https://mrpingan.github.io/post-images/1566377641597.png" alt=""><br>
-比如，这儿我就增加了ou=People中的叶子节点</p>
-<h3 id="jenkins设置">jenkins设置</h3>
-<p>如果通过管理员账号登录jenkins，可以看到这个选项</p>
-<p>接下来，选择<code>LDAP</code><br>
-<img src="https://mrpingan.github.io/post-images/1566377699539.png" alt=""></p>
-<p>填入配置，我的配置如下：<br>
-<img src="https://mrpingan.github.io/post-images/1566377716964.png" alt=""><br>
-填写完成后，可以验证一下<br>
-<img src="https://mrpingan.github.io/post-images/1566377732941.png" alt=""></p>
-<p><img src="https://mrpingan.github.io/post-images/1566377752076.png" alt=""><br>
-注意这儿的用户名只需要填写<code>User search filter</code>填写cn的值即可，因为我的dn为：cn=pingqiangqiang,ou=People,dc=ping,dc=cn<br>
-所以这儿需要填写 cn={0},如果你的dn为uid=pingqiangqiang,ou=People,dc=ping,dc=cn，则<code>User search filter</code>需要填写uid={0},然后通过pingqiangqiang去验证。如果需要通过邮箱验证，则<code>User search filter</code>需要填写mail={0}。</p>
-<p><img src="https://mrpingan.github.io/post-images/1566377766023.png" alt=""><br>
-如果测试通过，则会显示Authentication: successful之类的信息。</p>
-<h4 id="jenkins配置权限">Jenkins配置权限</h4>
-<p>还记得我们之前创建的两个组么，jenkins-admin、jenkins-user<br>
-在我的ldap中，cn=pingqiangqiang 这个用户属于 jenkins-admin组，cn=test 用户属于 jenkins-user 组<br>
-把页面下拉，可以看到 授权策略 现象，点击 安全矩阵 ，然后就可以添加对应的组来对不同的组来授权，组内的成员也会继承组的权限。<br>
-<img src="https://mrpingan.github.io/post-images/1566377786644.png" alt=""></p>
 ]]></content>
     </entry>
 </feed>

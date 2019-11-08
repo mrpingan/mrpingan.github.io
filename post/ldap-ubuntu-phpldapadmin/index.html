@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>查看发行版版本 | Ping&#39;s Home</title>
+<title>LDAP ubuntu phpldapadmin | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -101,12 +101,19 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">查看发行版版本</h2>
-            <div class="post-date">2019-09-16</div>
+            <h2 class="post-title">LDAP ubuntu phpldapadmin</h2>
+            <div class="post-date">2019-09-08</div>
             
             <div class="post-content">
-              <p>在centos和ubuntu上都可以通过这条命令查看版本</p>
-<pre><code>cat /etc/*-release
+              <p>https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-an-ubuntu-14-04-server</p>
+<h1 id="phpldapadmin连接ldaps">phpldapadmin连接ldaps</h1>
+<p>这儿的ssl证书是第三方授权的证书，phpldapadmin的配置文件如下</p>
+<pre><code class="language-php">$servers-&gt;setValue('server','name','My LDAP Server');
+$servers-&gt;setValue('server','host','ldaps://test-ldap.ping.net/');
+$servers-&gt;setValue('server','port',636);
+$servers-&gt;setValue('server','base',array('dc=ping,dc=net'));
+$servers-&gt;setValue('login','auth_type','session');
+$servers-&gt;setValue('login','bind_id','cn=admin,dc=ping,dc=net');
 </code></pre>
 
             </div>
@@ -114,9 +121,9 @@
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">
+                <a href="https://mrpingan.github.io/post/jxplorer-lian-jie-ldap">
                   <h3 class="post-title">
-                    jumpserver 连接ldap
+                    Jxplorer连接LDAP
                   </h3>
                 </a>
               </div>
