@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1568023563174">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1573189756165">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -39,7 +39,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://mrpingan.github.io">
-        <img src="https://mrpingan.github.io/images/avatar.png?v=1568023563174" class="site-logo">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1573189756165" class="site-logo">
         <h1 class="site-title">Ping&#39;s Home</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -105,7 +105,24 @@
             <div class="post-date">2019-09-09</div>
             
             <div class="post-content">
-              <h1 id="安装">安装</h1>
+              <h1 id="环境">环境</h1>
+<table>
+<thead>
+<tr>
+<th>ip</th>
+<th>os</th>
+<th>purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.33.10</td>
+<td>Ubuntu 14.04.6 LTS</td>
+<td>服务端</td>
+</tr>
+</tbody>
+</table>
+<h1 id="安装">安装</h1>
 <p>数据库后缀使用&quot;dc=dding,dc=net&quot;</p>
 <pre><code>apt install slapd ldap-utils
 </code></pre>
@@ -177,9 +194,134 @@ $SystemLogRateLimitInterval 0
 <pre><code>systemctl restart syslog.service
 </code></pre>
 <h1 id="tls">TLS</h1>
-<p>使用TLS可以加密回话，SSL证书可以使用自签名或者第三方授权机构颁发，这儿我使用第三方授权机构颁发的证书</p>
+<p>使用TLS可以加密回话，SSL证书可以使用自签名或者第三方授权机构颁发，这儿我使用第三方授权机构颁发的证书。LDAP服务端有两种TLS，一种是over ssl，即重新开一条加密通道636端口，通过此通道的回话都会被加密，但是389通道还是不安全的。还有一种是STARTTLS，此通道是复用了389端口，使389端口本身就是加密传输的。由于我们有一些应用并不支持STARTTLS，所以这儿我们还是使用over ssl，即再开启一个加密端口。<br>
+创建文件<code>certinfo.ldif</code>，内容如下：</p>
+<pre><code>dn: cn=config
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ssl/certs/2776538_test-ldap.dding.net.pem
+-
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ssl/private/2776538_test-ldap.dding.net.key
+-
+add: olcTLSVerifyClient
+olcTLSVerifyClient: allow
+</code></pre>
+<p>应用此配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f certinfo.ldif
+</code></pre>
+<p>输出如下：</p>
+<pre><code>SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry &quot;cn=config&quot;
+
+</code></pre>
+<p>增加加密ldaps端口,修改<code>/etc/default/slapd</code>文件,<code>SLAPD_SERVICES</code>增加<code>ldaps:///</code></p>
+<pre><code>SLAPD_SERVICES=&quot;ldap:/// ldapi:/// ldaps:///&quot;
+</code></pre>
+<p>之后重启服务</p>
+<pre><code>/etc/init.d/slapd restart
+</code></pre>
+<h1 id="验证">验证</h1>
+<p>执行openssl命令验证证书是否正确</p>
+<pre><code>openssl s_client -connect test-ldap.dding.net:636
+</code></pre>
+<p>显示如下：</p>
+<pre><code>CONNECTED(00000005)
+depth=2 C = US, O = DigiCert Inc, OU = www.digicert.com, CN = DigiCert Global Root CA
+verify return:1
+depth=1 C = US, O = DigiCert Inc, OU = www.digicert.com, CN = Encryption Everywhere DV TLS CA - G1
+verify return:1
+depth=0 CN = test-ldap.dding.net
+verify return:1
+---
+Certificate chain
+ 0 s:/CN=test-ldap.dding.net
+   i:/C=US/O=DigiCert Inc/OU=www.digicert.com/CN=Encryption Everywhere DV TLS CA - G1
+ 1 s:/C=US/O=DigiCert Inc/OU=www.digicert.com/CN=Encryption Everywhere DV TLS CA - G1
+   i:/C=US/O=DigiCert Inc/OU=www.digicert.com/CN=DigiCert Global Root CA
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIFkDCCBHigAwIBAgIQDBEMX45WNt24x7mwhCbE2TANBgkqhkiG9w0BAQsFADBu
+MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+d3cuZGlnaWNlcnQuY29tMS0wKwYDVQQDEyRFbmNyeXB0aW9uIEV2ZXJ5d2hlcmUg
+RFYgVExTIENBIC0gRzEwHhcNMTkwOTA1MDAwMDAwWhcNMjAwOTA0MTIwMDAwWjAe
+MRwwGgYDVQQDExN0ZXN0LWxkYXAuZGRpbmcubmV0MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAqgl8TGsS0ibeRehSoC1R/y4y8AzD2OgCo3Xqv2w3TaHU
+RIspyD19O0ffC9htFxgJF+0GLVjg2RI3MTw3JyYWkQvTAg8hEzSQgCjRzKxWCDnB
+55xrvlVP/ZL7rfGoZARTRnHjhFAq9HplZEUkT3Tnjy2Os22XWb/YMzTicHx8CJVb
+DYuS2jyq15Mwyuo4CKGfyycWLEOtWhVZocVbZrBKrqjS4DftJ2W3+k437YtGCbwy
+6y7KdpLqOqrimiuI/HdNl2wjIJ1IEEytD1PGjtq5s7iy2whJkKTpxc6ujHGOB9Q4
+N0eQC9/dXvho1/vd8jHzM+jPxJ99tNSk6Wu+I4IXtQIDAQABo4ICeDCCAnQwHwYD
+VR0jBBgwFoAUVXRPsnJP9WC6UNHX5lFcmgGHGtcwHQYDVR0OBBYEFHYSNpkZ2AUc
+xwQMt9ZB9KNWr05bMB4GA1UdEQQXMBWCE3Rlc3QtbGRhcC5kZGluZy5uZXQwDgYD
+VR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBMBgNV
+HSAERTBDMDcGCWCGSAGG/WwBAjAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5k
+aWdpY2VydC5jb20vQ1BTMAgGBmeBDAECATCBgAYIKwYBBQUHAQEEdDByMCQGCCsG
+AQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wSgYIKwYBBQUHMAKGPmh0
+dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9FbmNyeXB0aW9uRXZlcnl3aGVyZURW
+VExTQ0EtRzEuY3J0MAkGA1UdEwQCMAAwggEFBgorBgEEAdZ5AgQCBIH2BIHzAPEA
+dgDuS723dc5guuFCaR+r4Z5mow9+X7By2IMAxHuJeqj9ywAAAW0BOR0SAAAEAwBH
+MEUCIFySCE8IR37UC3HBbvEu1OFOn/xIyRMqzfGDrxJnYyh/AiEAmAPVBf2MOvm8
+lap3qUu14giqlzmmSOq33cMhnhrejSAAdwBep3P531bA57U2SH3QSeAyepGaDISh
+EhKEGHWWgXFFWAAAAW0BORydAAAEAwBIMEYCIQCfkLpK/S7WZXr3exlG5rTXsXis
+y+BDWXmlKnzQMzq9DwIhAI5PzVDkhZUGy0lHtq0uzTeaKz9NLIVDpLECOdFjz2Qx
+MA0GCSqGSIb3DQEBCwUAA4IBAQBw2D+5XsYOFA2qSymlXN34HcerIlbR1a8JnXlc
+LsAdL8KoVyz00rbSMoYzvCH60JuBUWHcmDY42vlPLg8stfd6h/e0hkbom3VdONNx
+BPDVx1Nu7IgI5PEIaQ/emH4RXPeypz3yjKJNhPIBqnF29BB2rhEREhjCXQaRgSh3
+V/i3UzDUSmrpbeOY0QCYZMr/pl6q6HsduoLcHQ7SoLZdLmjWAZDPT00quJdE66GJ
+MKkFEmyIB/6rxONz+foSvuduNKAnfpccVl+eNfCOPOILf2GtKWbJRKNCJ8M/hcRK
+l4G1jXjkL1B1mXtN7XPn9YsoG53e7QNn1YHwFHIfw0rJKGUT
+-----END CERTIFICATE-----
+subject=/CN=test-ldap.dding.net
+issuer=/C=US/O=DigiCert Inc/OU=www.digicert.com/CN=Encryption Everywhere DV TLS CA - G1
+---
+No client certificate CA names sent
+---
+SSL handshake has read 3022 bytes and written 558 bytes
+---
+New, TLSv1/SSLv3, Cipher is AES256-SHA256
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : AES256-SHA256
+    Session-ID: 79815433D459C0F2DF7807672BBC216BE7D155CE0D823FEEB377CB39F4010393
+    Session-ID-ctx:
+    Master-Key: CF90F435559CD97C98FB17F8E8F83EDCEBB3E76BEB7737C9A4FA2B3F715807DEEF5A2C1445E89BA8DA89C8A42E16BE59
+    Start Time: 1568041985
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+---
+</code></pre>
+<p>查看<code>ldap</code>服务端日志：</p>
+<pre><code>Sep  9 15:15:43 client slapd[9120]: conn=1004 fd=15 ACCEPT from IP=192.168.33.1:52870 (IP=0.0.0.0:636)
+Sep  9 15:15:43 client slapd[9120]: conn=1004 fd=15 TLS established tls_ssf=256 ssf=256
+</code></pre>
+<p>说明<code>ldap</code>服务端的ssl证书没问题，tls也没问题<br>
+下面使用客户端（Jxplorer）来连接,客户端需要添加CA证书，否则会报如下错误：</p>
+<pre><code>Root exception is javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: Invalid Server Certificate: server certificate could not be verified, and the CA certificate is missing from the certificate chain. raw error: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested targe
+</code></pre>
+<p>添加CA证书<br>
+<img src="https://mrpingan.github.io/post-images/1568042860520.png" alt=""><br>
+选择CA证书即可，这个颁发的免费证书的CA证书和公钥写在一个文件中，直接导入即可。<br>
+然后再通过636端口连接，Bravo，连接成功。<br>
+查看ldap日志：<br>
+<img src="https://mrpingan.github.io/post-images/1568042981701.png" alt=""></p>
 
             </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://mrpingan.github.io/tag/v9WOQbZWI6" class="tag">
+                    ldap
+                  </a>
+                
+              </div>
             
             
 

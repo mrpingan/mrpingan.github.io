@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>openldap 配置mirrormode | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1573189756165">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147433559-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147433559-1');
+</script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrpingan.github.io">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1573189756165" class="site-logo">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">openldap 配置mirrormode</h2>
+            <div class="post-date">2019-11-08</div>
+            
+            <div class="post-content">
+              <h1 id="简介">简介</h1>
+<p>MirrorMode 模式镜像同步模式，而且主服务器互相以推的方式实现目录树条目同步，最多允许且两台机器为主服务器。如果要添加更多节点，此时只能添加多台从服务器，而不能将添加的节点配置为主服务器</p>
+<h1 id="准备">准备</h1>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>IP</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>provider1</td>
+<td>192.168.33.10</td>
+<td></td>
+</tr>
+<tr>
+<td>provider2</td>
+<td>192.168.33.11</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>两台服务器互为主备，但是只能在一个provider上写。</p>
+<h1 id="安装ldap">安装ldap</h1>
+<pre><code>apt install slapd ldap-utils
+
+#重新配置
+dpkg-reconfigure slapd
+</code></pre>
+<p>dn: dc=ping,dc=cn<br>
+管理员密码：admin</p>
+<p>两台服务器的DIT要保持一致</p>
+<h1 id="开启日志如果已开启可忽略">开启日志(如果已开启可忽略)</h1>
+<p>log.ldif文件内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats sync
+</code></pre>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f log.ldif
+</code></pre>
+<h1 id="加载syncprov模块">加载syncprov模块</h1>
+<p>sync.ldif文件如下：</p>
+<pre><code>dn: cn=module{0},cn=config
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: syncprov.la
+
+dn: olcOverlay=syncprov,olcDatabase={1}hdb,cn=config
+changetype: add
+objectClass: olcOverlayConfig
+objectClass: olcSyncProvConfig
+olcOverlay: syncprov
+olcSpCheckpoint: 100 10
+olcSpSessionLog: 100
+</code></pre>
+<p>注意：</p>
+<ul>
+<li>指定的dn存在</li>
+<li>指定的Database要存在</li>
+<li>模块文件存在，ubuntu 的模块目录一般在<code>/usr/lib/ldap</code>目录下,如果在其他目录下，可通过<code>olcModulePath</code>指定目录，也可查看<code>cn=module{0}.ldif</code>文件<code>olcModulePath</code>是否被指定</li>
+</ul>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f sync.ldif
+</code></pre>
+<h1 id="配置mirror模式">配置mirror模式</h1>
+<p>master01.ldif文件内容如下：<br>
+master01的ip地址为: <code>192.168.33.10</code></p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcServerID
+olcServerID: 1
+
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+replace: olcSyncRepl
+olcSyncRepl: rid=001
+             provider=ldap://192.168.33.11:389
+             bindmethod=simple
+             binddn=&quot;cn=admin,dc=ping,dc=cn&quot;
+             credentials=admin
+             searchbase=&quot;dc=ping,dc=cn&quot;
+             filter=&quot;(objectClass=*)&quot;
+             scope=sub
+             schemachecking=off
+             attrs=&quot;*,+&quot;
+             type=refreshAndPersist
+             retry=&quot;5 5 300 +&quot;
+             interval=00:00:01:00
+-
+add: olcMirrorMode
+olcMirrorMode: TRUE
+-
+add: olcDbIndex
+olcDbIndex: entryUUID eq
+-
+add: olcDbIndex
+olcDbIndex: entryCSN eq
+</code></pre>
+<p>注意：</p>
+<ul>
+<li>此处的<code>provider</code>指定的另一台服务器的ip</li>
+<li><code>rid</code>要保持一致</li>
+<li><code>olcServerID</code>要区分</li>
+</ul>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f master01.ldif
+</code></pre>
+<p>master02.ldif文件内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcServerID
+olcServerID: 2
+
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+replace: olcSyncRepl
+olcSyncRepl: rid=001
+             provider=ldap://192.168.33.10:389
+             bindmethod=simple
+             binddn=&quot;cn=admin,dc=ping,dc=cn&quot;
+             credentials=admin
+             searchbase=&quot;dc=ping,dc=cn&quot;
+             filter=&quot;(objectClass=*)&quot;
+             scope=sub
+             schemachecking=off
+             attrs=&quot;*,+&quot;
+             type=refreshAndPersist
+             retry=&quot;5 5 300 +&quot;
+             interval=00:00:01:00
+-
+add: olcMirrorMode
+olcMirrorMode: TRUE
+-
+add: olcDbIndex
+olcDbIndex: entryUUID eq
+-
+add: olcDbIndex
+olcDbIndex: entryCSN eq
+</code></pre>
+<p>应用配置:</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f master02.ldif
+</code></pre>
+<h1 id="验证">验证</h1>
+<p>1、查看日志：<br>
+<img src="https://mrpingan.github.io/post-images/1573189656518.png" alt=""><br>
+并未看到任何错误</p>
+<p>2、添加用户<br>
+在master01上添加用户，看master02上是否被同步</p>
+<p>验证通过！</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">
+                  <h3 class="post-title">
+                    查看发行版版本
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

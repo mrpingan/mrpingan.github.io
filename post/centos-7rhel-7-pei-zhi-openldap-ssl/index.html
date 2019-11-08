@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1568023563174">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1573189756165">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -39,7 +39,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://mrpingan.github.io">
-        <img src="https://mrpingan.github.io/images/avatar.png?v=1568023563174" class="site-logo">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1573189756165" class="site-logo">
         <h1 class="site-title">Ping&#39;s Home</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -304,6 +304,25 @@ scp -pr 192.168.33.11:/etc/openldap/certs/itzgeekrootCA.pem /etc/openldap/cacert
 <img src="https://mrpingan.github.io/post-images/1567857602492.png" alt=""><br>
 查看日志TLS建立成功<br>
 <img src="https://mrpingan.github.io/post-images/1567858011786.png" alt=""></p>
+<h1 id="错误记录">错误记录</h1>
+<p>1、在应用证书配置的时候，报错</p>
+<pre><code>replace olcTLSCertificateFile:
+    /etc/apache2/ssl/od.censored.pl.crt
+modifying entry &quot;cn=config&quot;
+ldap_modify: Other (e.g., implementation specific) error (80)
+</code></pre>
+<p>我的解决方案，可能是证书目录权限配置问题，可通过<code>strace</code>分析具体报错</p>
+<pre><code>strace ldapmodify -Y EXTERNAL -H ldapi:/// -vvv -f certs.ldif
+</code></pre>
+<p>ubuntu中配置权限</p>
+<pre><code>chgrp openldap /etc/ssl/private/ldap01_slapd_key.pem
+chmod 0640 /etc/ssl/private/ldap01_slapd_key.pem
+gpasswd -a openldap ssl-cert
+</code></pre>
+<p>重启ldap</p>
+<pre><code>systemctl restart slapd
+</code></pre>
+<p>然后再执行就可以了。</p>
 
             </div>
             

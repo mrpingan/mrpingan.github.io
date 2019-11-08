@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-09-09T10:06:07.824Z</updated>
+    <updated>2019-11-08T05:09:20.465Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,196 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2019, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[openldap 配置mirrormode]]></title>
+        <id>https://mrpingan.github.io/post/openldap-pei-zhi-mirrormode</id>
+        <link href="https://mrpingan.github.io/post/openldap-pei-zhi-mirrormode">
+        </link>
+        <updated>2019-11-08T03:28:40.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="简介">简介</h1>
+<p>MirrorMode 模式镜像同步模式，而且主服务器互相以推的方式实现目录树条目同步，最多允许且两台机器为主服务器。如果要添加更多节点，此时只能添加多台从服务器，而不能将添加的节点配置为主服务器</p>
+<h1 id="准备">准备</h1>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>IP</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>provider1</td>
+<td>192.168.33.10</td>
+<td></td>
+</tr>
+<tr>
+<td>provider2</td>
+<td>192.168.33.11</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>两台服务器互为主备，但是只能在一个provider上写。</p>
+<h1 id="安装ldap">安装ldap</h1>
+<pre><code>apt install slapd ldap-utils
+
+#重新配置
+dpkg-reconfigure slapd
+</code></pre>
+<p>dn: dc=ping,dc=cn<br>
+管理员密码：admin</p>
+<p>两台服务器的DIT要保持一致</p>
+<h1 id="开启日志如果已开启可忽略">开启日志(如果已开启可忽略)</h1>
+<p>log.ldif文件内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats sync
+</code></pre>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f log.ldif
+</code></pre>
+<h1 id="加载syncprov模块">加载syncprov模块</h1>
+<p>sync.ldif文件如下：</p>
+<pre><code>dn: cn=module{0},cn=config
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: syncprov.la
+
+dn: olcOverlay=syncprov,olcDatabase={1}hdb,cn=config
+changetype: add
+objectClass: olcOverlayConfig
+objectClass: olcSyncProvConfig
+olcOverlay: syncprov
+olcSpCheckpoint: 100 10
+olcSpSessionLog: 100
+</code></pre>
+<p>注意：</p>
+<ul>
+<li>指定的dn存在</li>
+<li>指定的Database要存在</li>
+<li>模块文件存在，ubuntu 的模块目录一般在<code>/usr/lib/ldap</code>目录下,如果在其他目录下，可通过<code>olcModulePath</code>指定目录，也可查看<code>cn=module{0}.ldif</code>文件<code>olcModulePath</code>是否被指定</li>
+</ul>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f sync.ldif
+</code></pre>
+<h1 id="配置mirror模式">配置mirror模式</h1>
+<p>master01.ldif文件内容如下：<br>
+master01的ip地址为: <code>192.168.33.10</code></p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcServerID
+olcServerID: 1
+
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+replace: olcSyncRepl
+olcSyncRepl: rid=001
+             provider=ldap://192.168.33.11:389
+             bindmethod=simple
+             binddn=&quot;cn=admin,dc=ping,dc=cn&quot;
+             credentials=admin
+             searchbase=&quot;dc=ping,dc=cn&quot;
+             filter=&quot;(objectClass=*)&quot;
+             scope=sub
+             schemachecking=off
+             attrs=&quot;*,+&quot;
+             type=refreshAndPersist
+             retry=&quot;5 5 300 +&quot;
+             interval=00:00:01:00
+-
+add: olcMirrorMode
+olcMirrorMode: TRUE
+-
+add: olcDbIndex
+olcDbIndex: entryUUID eq
+-
+add: olcDbIndex
+olcDbIndex: entryCSN eq
+</code></pre>
+<p>注意：</p>
+<ul>
+<li>此处的<code>provider</code>指定的另一台服务器的ip</li>
+<li><code>rid</code>要保持一致</li>
+<li><code>olcServerID</code>要区分</li>
+</ul>
+<p>应用配置：</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f master01.ldif
+</code></pre>
+<p>master02.ldif文件内容如下：</p>
+<pre><code>dn: cn=config
+changetype: modify
+replace: olcServerID
+olcServerID: 2
+
+dn: olcDatabase={1}hdb,cn=config
+changetype: modify
+replace: olcSyncRepl
+olcSyncRepl: rid=001
+             provider=ldap://192.168.33.10:389
+             bindmethod=simple
+             binddn=&quot;cn=admin,dc=ping,dc=cn&quot;
+             credentials=admin
+             searchbase=&quot;dc=ping,dc=cn&quot;
+             filter=&quot;(objectClass=*)&quot;
+             scope=sub
+             schemachecking=off
+             attrs=&quot;*,+&quot;
+             type=refreshAndPersist
+             retry=&quot;5 5 300 +&quot;
+             interval=00:00:01:00
+-
+add: olcMirrorMode
+olcMirrorMode: TRUE
+-
+add: olcDbIndex
+olcDbIndex: entryUUID eq
+-
+add: olcDbIndex
+olcDbIndex: entryCSN eq
+</code></pre>
+<p>应用配置:</p>
+<pre><code>ldapmodify -Y EXTERNAL -H ldapi:/// -f master02.ldif
+</code></pre>
+<h1 id="验证">验证</h1>
+<p>1、查看日志：<br>
+<img src="https://mrpingan.github.io/post-images/1573189656518.png" alt=""><br>
+并未看到任何错误</p>
+<p>2、添加用户<br>
+在master01上添加用户，看master02上是否被同步</p>
+<p>验证通过！</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[查看发行版版本]]></title>
+        <id>https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben</id>
+        <link href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">
+        </link>
+        <updated>2019-09-16T08:25:02.000Z</updated>
+        <content type="html"><![CDATA[<p>在centos和ubuntu上都可以通过这条命令查看版本</p>
+<pre><code>cat /etc/*-release
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[jumpserver 连接ldap]]></title>
+        <id>https://mrpingan.github.io/post/jumpserver-lian-jie-ldap</id>
+        <link href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">
+        </link>
+        <updated>2019-09-15T12:57:20.000Z</updated>
+        <content type="html"><![CDATA[<p><img src="https://mrpingan.github.io/post-images/1568552305999.png" alt=""></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[confluence连接ldaps]]></title>
+        <id>https://mrpingan.github.io/post/confluence-lian-jie-ldaps</id>
+        <link href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">
+        </link>
+        <updated>2019-09-10T04:22:51.000Z</updated>
+        <content type="html"><![CDATA[<p><img src="https://mrpingan.github.io/post-images/1568089430883.png" alt=""></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Jxplorer连接LDAP]]></title>
         <id>https://mrpingan.github.io/post/jxplorer-lian-jie-ldap</id>
@@ -244,6 +434,25 @@ scp -pr 192.168.33.11:/etc/openldap/certs/itzgeekrootCA.pem /etc/openldap/cacert
 <img src="https://mrpingan.github.io/post-images/1567857602492.png" alt=""><br>
 查看日志TLS建立成功<br>
 <img src="https://mrpingan.github.io/post-images/1567858011786.png" alt=""></p>
+<h1 id="错误记录">错误记录</h1>
+<p>1、在应用证书配置的时候，报错</p>
+<pre><code>replace olcTLSCertificateFile:
+    /etc/apache2/ssl/od.censored.pl.crt
+modifying entry &quot;cn=config&quot;
+ldap_modify: Other (e.g., implementation specific) error (80)
+</code></pre>
+<p>我的解决方案，可能是证书目录权限配置问题，可通过<code>strace</code>分析具体报错</p>
+<pre><code>strace ldapmodify -Y EXTERNAL -H ldapi:/// -vvv -f certs.ldif
+</code></pre>
+<p>ubuntu中配置权限</p>
+<pre><code>chgrp openldap /etc/ssl/private/ldap01_slapd_key.pem
+chmod 0640 /etc/ssl/private/ldap01_slapd_key.pem
+gpasswd -a openldap ssl-cert
+</code></pre>
+<p>重启ldap</p>
+<pre><code>systemctl restart slapd
+</code></pre>
+<p>然后再执行就可以了。</p>
 ]]></content>
     </entry>
     <entry>
@@ -604,145 +813,6 @@ MAVEN_OPTS=&quot;-Xss10240k&quot;
 在我的ldap中，cn=pingqiangqiang 这个用户属于 jenkins-admin组，cn=test 用户属于 jenkins-user 组<br>
 把页面下拉，可以看到 授权策略 现象，点击 安全矩阵 ，然后就可以添加对应的组来对不同的组来授权，组内的成员也会继承组的权限。<br>
 <img src="https://mrpingan.github.io/post-images/1566377786644.png" alt=""></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Django 中的 context_processors 好处]]></title>
-        <id>https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu</id>
-        <link href="https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu">
-        </link>
-        <updated>2019-06-23T13:48:11.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="context_processors"><code>context_processors</code></h1>
-<p>从字面上理解为上下文，会将请求对象作为参数并以字典的方式合并到context中返回。比如，使用<code>render</code>函数的时候，就需要返回context，有了<code>context_processors</code>,就可以不用再去给模板传递过多的参数。在默认生成的配置文件<code>settings.py</code>中，默认模板引擎包含以下上下文处理器：</p>
-<pre><code class="language-python">['django.template.context_processors.debug',
-  'django.template.context_processors.request',
-  'django.contrib.auth.context_processors.auth',
-  'django.contrib.messages.context_processors.messages',]
-</code></pre>
-<p>除此之外，请求上下文默认开启<code>django.template.context_processors.csrf</code>，这是为了安全考虑，而且已经硬编码了，不能在<code>context_processors</code>中关闭。这就是为什么我们可以在模板中直接使用<code>csrf_token</code>的原因</p>
-<p>每一个处理器有顺序。这意味着，如果一个处理器添加了一个变量到上下文，第二个处理器也添加了一个同名的变量到上下文，这样，第二个添加的变量的值会覆盖第一个。</p>
-<h2 id="内建的模板上下文处理器">内建的模板上下文处理器</h2>
-<h3 id="djangocontribauthcontext_processorsauth">django.contrib.auth.context_processors.auth</h3>
-<p>如果这个处理器开启了，每一个请求上下文都将下面的变量：</p>
-<ul>
-<li><strong>user</strong></li>
-</ul>
-<p>当前登陆的user对象，或者一个匿名user对象。可以在模板中通过 <strong>user.username</strong>调用</p>
-<ul>
-<li><code>perms</code></li>
-</ul>
-<p>当前登陆用户的所有实例。可以在模板中通过<code>perms.models_name.permission_name</code>调用</p>
-<h3 id="djangotemplatecontext_processorsdebug">django.template.context_processors.debug</h3>
-<p>如果这个选项开启了，每一个请求上下文都将包含下面两个变量。但是只有你的<code>DEBUG</code>设置为<code>True</code>,而且请求的IP地址（<code>request.META['REMOTE_ADDR']</code>）在<code>INTERNAL_IPS</code>设置的列表中：</p>
-<ul>
-<li>debug</li>
-</ul>
-<p>可以使用这个变量来测试是否你正处于<code>DEBUG</code>模式</p>
-<ul>
-<li>sql_queries</li>
-</ul>
-<p>一个<code>{'sql': ..., 'time': ...}</code>的字典，展示了当前请求的每一个SQL以及执行时间，Django有一个swagger插件可以。</p>
-<h3 id="djangotemplatecontext_processorsi18n">django.template.context_processors.i18n</h3>
-<p>这个是国际化的一个组件。开启后，在模板中将可以使用一下变量</p>
-<ul>
-<li>LANGUAGES</li>
-</ul>
-<p>当前的<code>LANGUAGES</code>设置</p>
-<ul>
-<li>LANGUAGE_BIDI</li>
-<li>LANGUAGE_CODE</li>
-</ul>
-<h3 id="djangotemplatecontext_processorsmedia">django.template.context_processors.media</h3>
-<p>开启后，每一个请求上下文将包含一个<code>MEDIA_URL</code>变量，可以在模板中提供<code>MEDIA_URL</code>的值</p>
-<ul>
-<li>MEDIA_URL</li>
-</ul>
-<h3 id="djangotemplatecontext_processorsstatic">django.template.context_processors.static</h3>
-<p>开启后，可以在模板中使用 <code>STATIC_URL</code>变量，可以在模板中提供<code>STATIC_URL</code>的在<code>setttings.py</code>中的值，</p>
-<ul>
-<li>STATIC_URL</li>
-</ul>
-<h3 id="djangotemplatecontext_processorscsrf">django.template.context_processors.csrf</h3>
-<p>这个处理器提供了<strong>csrf_token</strong>模板tag需要的token，用户避免跨站请求攻击</p>
-<h3 id="djangotemplatecontext_processorsrequest">django.template.context_processors.request</h3>
-<p>这个处理器开启后，每一个处理器上下文都将包含一个<code>request</code>变量，就是当前的<code>HttpRequest</code></p>
-<ul>
-<li>request</li>
-</ul>
-<h3 id="djangotemplatecontext_processorstz">django.template.context_processors.tz</h3>
-<p>这个处理器开启后，每一个请求上下文都将包含一个<code>TIME_ZONE</code>变量，提供当前的时区</p>
-<h3 id="djangocontribmessagescontext_processorsmessages">django.contrib.messages.context_processors.messages</h3>
-<p>这个处理器开启后，每一个请求上下文都将包含下面两个变量</p>
-<ul>
-<li>messages</li>
-</ul>
-<p>通过django的消息框架设置的messages的列表</p>
-<ul>
-<li>DEFAULT_MESSAGE_LEVELS</li>
-</ul>
-<p>一组消息级别名称到其数值的映射</p>
-<table>
-<thead>
-<tr>
-<th>Level Constant</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DEBUG</td>
-<td>10</td>
-</tr>
-<tr>
-<td>INFO</td>
-<td>20</td>
-</tr>
-<tr>
-<td>SUCCESS</td>
-<td>25</td>
-</tr>
-<tr>
-<td>WARNING</td>
-<td>30</td>
-</tr>
-<tr>
-<td>ERROR</td>
-<td>40</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>https://mrpingan.github.io/post/hello-gridea</id>
-        <link href="https://mrpingan.github.io/post/hello-gridea">
-        </link>
-        <updated>2018-12-11T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<!-- more -->
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="http://hvenotes.fehey.com/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>𝖶𝗂𝗇𝖽𝗈𝗐𝗌</strong> 或 <strong>𝖬𝖺𝖼𝖮𝖲</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
 ]]></content>
     </entry>
 </feed>
