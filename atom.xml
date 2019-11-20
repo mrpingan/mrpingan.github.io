@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-11-20T12:47:02.015Z</updated>
+    <updated>2019-11-20T12:49:09.416Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -58,8 +58,9 @@ Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to
 <h3 id="导入证书到keystore">导入证书到keystore</h3>
 <pre><code>&lt;JAVA_HOME&gt;/bin/keytool -import -alias &lt;server_name&gt; -keystore &lt;JAVA_HOME&gt;/jre/lib/security/cacerts -file public.crt
 </code></pre>
-<p>参考文档：https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html#HowtoimportapublicSSLcertificateintoaJVM-commandline<br>
-https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html</p>
+<p>参考文档：<br>
+https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html#HowtoimportapublicSSLcertificateintoaJVM-commandline</p>
+<p>https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html</p>
 ]]></content>
     </entry>
     <entry>
