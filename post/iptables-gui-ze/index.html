@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>iptables 规则 | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1574254016064">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147433559-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147433559-1');
+</script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrpingan.github.io">
+        <img src="https://mrpingan.github.io/images/avatar.png?v=1574254016064" class="site-logo">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">iptables 规则</h2>
+            <div class="post-date">2019-11-08</div>
+            
+            <div class="post-content">
+              <pre><code>#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#                 _   _    _  _____                   #
+#                | \ | |  / \|_   _|                  #
+#                |  \| | / _ \ | |                    #
+#                | |\  |/ ___ \| |                    #
+#                |_| \_/_/   \_\_|                    #
+#                                                     #
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*nat
+
+#######################################################
+#                   Prerouting ACL                    #
+#======================================================
+#  默认允许路由前流量
+#
+:PREROUTING ACCEPT [0:0]
+
+#######################################################
+#                   Postrouting ACL                   #
+#======================================================
+#  默认允许路由后流量
+#
+:POSTROUTING ACCEPT [0:0]
+
+#======================================================
+#  将离开OpenVPN隧道的数据包的源IP转换成网卡出口地址
+#
+-A POSTROUTING -s 10.8.0.0/24 -o eth1 -j MASQUERADE
+
+#======================================================
+-A POSTROUTING -o venet0 -s 192.168.10.0/24 -j MASQUERADE
+
+
+
+#######################################################
+#                    Outbound ACL                     #
+#======================================================
+#  默认允许出站流量
+#
+:OUTPUT ACCEPT [0:0]
+
+#######################################################
+#                     NAT Commit                      #
+#======================================================
+#
+COMMIT
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#           _____ ___ _   _____ _____ ____            #
+#          |  ___|_ _| | |_   _| ____|  _ \           #
+#          | |_   | || |   | | |  _| | |_) |          #
+#          |  _|  | || |___| | | |___|  _ &lt;           #
+#          |_|   |___|_____|_| |_____|_| \_\          #
+#                                                     #
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*filter
+
+#######################################################
+#                    Inbound ACL                      #
+#======================================================
+#  默认拒绝入站流量
+#
+:INPUT DROP [0:0]
+
+#======================================================
+#  允许外来设备访问本机的 SSH 服务（备用端口 22199）
+#  前提条件: 使用 ping 敲门，超时 30 秒
+#    - linux:   ping -c 1 -s 666 x.x.x.x
+#    - windows: ping -n 1 -l 666 x.x.x.x
+#
+-A INPUT -p icmp -m icmp --icmp-type 8 -m length --length 694 -m recent --set --name sshopen --rsource -j ACCEPT
+
+-A INPUT -p tcp -m tcp --dport 22199 --tcp-flags FIN,SYN,RST,ACK SYN -m recent --rcheck --seconds 30 --name sshopen --rsource -j ACCEPT
+
+#ssh
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22188 -j ACCEPT
+
+
+#======================================================
+#  放行已握手的TCP数据报文
+#
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#======================================================
+#  允许环回地址的其它任意操作
+#
+-A INPUT -i lo -j ACCEPT
+
+#======================================================
+#  允许入站方面的 icmp 协议报文（如外部 ping 操作）
+#
+-A INPUT -p icmp -j ACCEPT
+#ss
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 8381 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 8382 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+
+#======================================================
+#######################################################
+#                    Outbound ACL                     #
+#======================================================
+#  默认允许出站流量
+#
+:OUTPUT ACCEPT [0:0]
+
+#######################################################
+#                    Forward ACL                      #
+#======================================================
+#  默认允许转发流量
+#
+:FORWARD ACCEPT [0:0]
+
+#######################################################
+#                   Filter Commit                     #
+#======================================================
+#
+COMMIT
+
+
+</code></pre>
+
+            </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
