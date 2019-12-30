@@ -7,74 +7,127 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1577680606171">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1577680494665">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
 
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  
+
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147433559-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-147433559-1');
-</script>
-
-
   </head>
   <body>
-    <div id="app" class="main">
-
-      <div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="https://mrpingan.github.io">
-        <img src="https://mrpingan.github.io/images/avatar.png?v=1577680494665" class="site-logo">
-        <h1 class="site-title">Ping&#39;s Home</h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
-      </div>
-    </div>
-    <div>
-      
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://mrpingan.github.io">Ping&#39;s Home</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
         
-          <a href="/" class="site-nav">
-            首页
-          </a>
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
         
-          <a href="/archives" class="site-nav">
-            归档
-          </a>
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
         
-          <a href="/tags" class="site-nav">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="site-nav">
-            关于
-          </a>
-        
-      
+      </ul>
     </div>
   </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>jumpserver 连接ldap</h1>
+            <p class="article-meta">
+              2019-09-15
+              
+            </p>
+            
+            <div class="post-content">
+              <p><img src="https://mrpingan.github.io/post-images/1568552305999.png" alt=""></p>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
+                <h3 class="post-title">
+                  confluence用户数据迁移
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+          
+            <div class="paper" data-aos="fade-in">
+              <div id="gitalk-container"></div>
+            </div>
+          
+
+          
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://mrpingan.github.io/images/avatar.png?v=1577680606171" class="no-responsive avatar">
+    <div class="text-muted">温故而知新</div>
     <div class="social-container">
       
         
@@ -88,44 +141,133 @@
         
       
     </div>
-    <div class="site-description">
-      温故而知新
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
     </div>
-    <div class="site-footer">
-      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/hao-wen-yi-lan">好文一览</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/java-xiang-mu-ssl-zheng-shu-yan-zheng-cuo-wu">java项目ssl 证书验证错误</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ubuntu-an-zhuang-wen-ti">ubuntu 安装问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/openldap-pei-zhi-mirrormode">openldap 配置mirrormode</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm">ubuntu14安装FPM</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">查看发行版版本</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">jumpserver 连接ldap</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">confluence用户数据迁移</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">confluence连接ldaps</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin">LDAP ubuntu phpldapadmin</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
     </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://mrpingan.github.io/tag/v9WOQbZWI6" class="badge ">
+          ldap
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/9z_3sJloO" class="badge secondary">
+          confluence
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/NN8M0FDOGd" class="badge warning">
+          maven
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/hmh1w8HrtU" class="badge secondary">
+          jenkins
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/fJ2-6TANr" class="badge warning">
+          django
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/gridea" class="badge warning">
+          Gridea
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
   </div>
 </div>
 
 
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
-          <div class="post-detail">
-            <h2 class="post-title">jumpserver 连接ldap</h2>
-            <div class="post-date">2019-09-15</div>
-            
-            <div class="post-content">
-              <p><img src="https://mrpingan.github.io/post-images/1568552305999.png" alt=""></p>
-
-            </div>
-            
-            
-              <div class="next-post">
-                <div class="next">下一篇</div>
-                <a href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
-                  <h3 class="post-title">
-                    confluence用户数据迁移
-                  </h3>
-                </a>
-              </div>
-            
-
-            
-
-          </div>
-
-        </div>
-      </div>
     </div>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -136,14 +278,30 @@ AOS.init();
 
 hljs.initHighlightingOnLoad()
 
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
-
 </script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 

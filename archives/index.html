@@ -7,112 +7,92 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1577680606171">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1577680494665">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
 
-
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147433559-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-147433559-1');
-</script>
-
-
   </head>
   <body>
-    <div id="app" class="main">
-
-      <div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="https://mrpingan.github.io">
-        <img src="https://mrpingan.github.io/images/avatar.png?v=1577680494665" class="site-logo">
-        <h1 class="site-title">Ping&#39;s Home</h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
-      </div>
-    </div>
-    <div>
-      
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://mrpingan.github.io">Ping&#39;s Home</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
         
-          <a href="/" class="site-nav">
-            首页
-          </a>
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
         
-          <a href="/archives" class="site-nav">
-            归档
-          </a>
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
         
-      
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
         
-          <a href="/tags" class="site-nav">
-            标签
-          </a>
-        
-      
-        
-          <a href="/post/about" class="site-nav">
-            关于
-          </a>
-        
-      
+      </ul>
     </div>
   </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
-    <div class="social-container">
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    </div>
-    <div class="site-description">
-      温故而知新
-    </div>
-    <div class="site-footer">
-      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
-    </div>
-  </div>
-</div>
+</nav>
 
-
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
+    
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
           
 
           <h2 class="archives-title">文章归档</h2>
           <div class="archives-container">
             
-              <h2 class="year" data-aos="fade-in" data-aos-delay="500">2019</h2>
+              <h3 class="year" data-aos-delay="500">2019</h3>
               
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/hao-wen-yi-lan">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         好文一览
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -120,9 +100,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/java-xiang-mu-ssl-zheng-shu-yan-zheng-cuo-wu">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         java项目ssl 证书验证错误
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -130,9 +110,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/ubuntu-an-zhuang-wen-ti">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         ubuntu 安装问题
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -140,9 +120,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/openldap-pei-zhi-mirrormode">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         openldap 配置mirrormode
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -150,9 +130,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         ubuntu14安装FPM
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -160,9 +140,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         查看发行版版本
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -170,9 +150,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         jumpserver 连接ldap
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -180,9 +160,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         confluence用户数据迁移
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -190,9 +170,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         confluence连接ldaps
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -200,9 +180,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         LDAP ubuntu phpldapadmin
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -210,9 +190,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/jxplorer-lian-jie-ldap">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Jxplorer连接LDAP
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -220,9 +200,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/centos-7rhel-7-pei-zhi-openldap-ssl">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Centos 7/RHEL 7配置OpenLDAP SSL
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -230,9 +210,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/ldap-ssl-pei-zhi">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Centos7/RHEL 7 LDAP 配置
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -240,9 +220,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/confluence-jin-yong-wang-ji-mi-ma-gong-neng">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         confluence禁用忘记密码功能
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -250,9 +230,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/django-xue-xi">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Django学习
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -260,9 +240,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         maven打包栈溢出的问题
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -270,9 +250,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/jenkins-lian-jie-ldap">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         jenkins 连接ldap
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -280,9 +260,9 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/django-zhong-de-context_processors-hao-chu">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Django 中的 context_processors 好处
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
@@ -290,7 +270,7 @@
                 
               
             
-              <h2 class="year" data-aos="fade-in" data-aos-delay="500">2018</h2>
+              <h3 class="year" data-aos-delay="500">2018</h3>
               
                 
               
@@ -331,24 +311,165 @@
                 
                   <article class="post">
                     <a href="https://mrpingan.github.io/post/hello-gridea">
-                      <h2 class="post-title">
+                      <h4 class="post-title">
                         Hello Gridea
-                      </h2>
+                      </h4>
                     </a>
                   </article>
                 
               
             
           </div>
-
-          <div class="pagination-container">
+        </div>
+        <div class="row flex-edges">
   
   
 </div>
 
-        </div>
       </div>
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://mrpingan.github.io/images/avatar.png?v=1577680606171" class="no-responsive avatar">
+    <div class="text-muted">温故而知新</div>
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/hao-wen-yi-lan">好文一览</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/java-xiang-mu-ssl-zheng-shu-yan-zheng-cuo-wu">java项目ssl 证书验证错误</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ubuntu-an-zhuang-wen-ti">ubuntu 安装问题</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/openldap-pei-zhi-mirrormode">openldap 配置mirrormode</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm">ubuntu14安装FPM</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">查看发行版版本</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">jumpserver 连接ldap</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">confluence用户数据迁移</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">confluence连接ldaps</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin">LDAP ubuntu phpldapadmin</a>
+            </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://mrpingan.github.io/tag/v9WOQbZWI6" class="badge ">
+          ldap
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/9z_3sJloO" class="badge success">
+          confluence
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/NN8M0FDOGd" class="badge success">
+          maven
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/hmh1w8HrtU" class="badge secondary">
+          jenkins
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/fJ2-6TANr" class="badge secondary">
+          django
+        </a>
+      
+        <a href="https://mrpingan.github.io/tag/gridea" class="badge secondary">
+          Gridea
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrpingan.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
@@ -357,13 +478,6 @@
 AOS.init();
 
 hljs.initHighlightingOnLoad()
-
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
 
 </script>
 
