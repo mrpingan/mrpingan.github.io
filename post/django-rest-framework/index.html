@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>jumpserver 连接ldap | Ping&#39;s Home</title>
+<title>Django-rest-framework | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,22 +80,28 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">jumpserver 连接ldap</h2>
+          <h2 class="post-title">Django-rest-framework</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2019-09-15</span>
+            <span><i class="icon-calendar-outline"></i> 2020-01-08</span>
             
           </div>
           <div class="post-content">
-            <p><img src="https://mrpingan.github.io/post-images/1568552305999.png" alt=""></p>
+            <p>1、浏览器api界面没有Login按钮</p>
+<pre><code class="language-python">urlpatterns = [
+    path('^api-auth/',include('rest_framework.urls',namespace=&quot;rest_framework_auth&quot;))
+]
+</code></pre>
+<p>需要在<code>urls.py</code>中配置这一条路由，就可以看到登录按钮了<br>
+<img src="https://mrpingan.github.io/post-images/1578491545380.png" alt=""></p>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
+            <a class="purple-link" href="https://mrpingan.github.io/post/hao-wen-yi-lan">
               <h3 class="post-title">
-                下一篇：confluence用户数据迁移
+                下一篇：好文一览
               </h3>
             </a>
           </div>

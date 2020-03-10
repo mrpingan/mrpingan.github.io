@@ -2,14 +2,108 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2019-12-31T07:16:33.175Z</updated>
+    <updated>2020-03-10T03:49:47.394Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2019, Ping&apos;s Home</rights>
+    <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[ubuntu 安装es]]></title>
+        <id>https://mrpingan.github.io/post/ubuntu-an-zhuang-es</id>
+        <link href="https://mrpingan.github.io/post/ubuntu-an-zhuang-es">
+        </link>
+        <updated>2020-03-10T03:47:08.000Z</updated>
+        <content type="html"><![CDATA[<p>使用dpkg安装es的时候，发现<code>/etc/elasticserach</code>目录下一直没有配置文件。重新安装也是这样。</p>
+<pre><code># 可以尝试全部清除配置文件
+dpkg -P package_name
+</code></pre>
+<p>然后重新安装，顺利完成</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[apollo笔记]]></title>
+        <id>https://mrpingan.github.io/post/apollo-bi-ji</id>
+        <link href="https://mrpingan.github.io/post/apollo-bi-ji">
+        </link>
+        <updated>2020-02-12T07:02:44.000Z</updated>
+        <content type="html"><![CDATA[<p>apollo是携程开源的配置中心组件。可以将配置集中放置，并在配置变更后推送给应用，实现修改配置无需重启服务，而且配置有版本控制，可回滚。</p>
+<h1 id="为什么要引入apollo">为什么要引入Apollo</h1>
+<p>1、接入apollo可以让配置集中放置，配置热更新，服务无需重启。<br>
+2、接入apollo更安全。配置如果放在服务源码中，如果服务源码泄露，配置也会随着泄露。<br>
+参考文章：http://beckjin.com/2019/07/14/apollo-distributed/<br>
+https://www.infoq.cn/article/ctrip-apollo-configuration-center-architecture</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[rabbitmq集群部分文档]]></title>
+        <id>https://mrpingan.github.io/post/rabbitmq-ji-qun-bu-fen-wen-dang</id>
+        <link href="https://mrpingan.github.io/post/rabbitmq-ji-qun-bu-fen-wen-dang">
+        </link>
+        <updated>2020-02-11T14:52:51.000Z</updated>
+        <content type="html"><![CDATA[<p>一个RabbitMQ集群是一个或者多个rabbitmq单机节点逻辑上的组。每一个成员共享users,virtual hosts,queues,exchanges,bindings,runtime parameters和其他分布式的状态。</p>
+<h1 id="集群发现">集群发现</h1>
+<p>一个RabbitMQ可以通过多种方式构建</p>
+<ul>
+<li>在配置文件中指明节点</li>
+<li>通过基于DNS解析为IP</li>
+<li>使用AWS(EC2) instance discovery（需要通过插件）</li>
+<li>通过基于consul discovery（需要通过插件）</li>
+<li>通过etcd（需要通过插件）</li>
+<li>通过<code>rabbitmqctl</code>手动指定</li>
+</ul>
+<h2 id="节点名">节点名</h2>
+<p>RabbitMQ节点通过节点名来识别。一个rabbitmq节点包括两部分。一个前缀（通常是rabbit）和主机名。比如<code>rabbit@node1.messaging.svc.local</code><br>
+集群中的节点名必须唯一。如果在一个服务器上运行了多了rabbitmq节点，则这些节点必须要使用不同的前缀，比如<code>rabbit1@hostname</code>和<code>rabbit2@hostname</code> 。<br>
+在集群中，节点通过节点名来相互辨别和通信。这意味着每一个节点的hostname都可以正常解析。rabbitmq命令行工具也使用节点名来辨别节点。<br>
+当一个节点启动时，将会检查是否这个节点已经注册，节点名也可以通过<code>RABBITMQ_NODENAME</code>环境变量设置。如果这个变量没有声明，将会使用<code>rabbit@hostname</code>的方式。<br>
+如果系统使用了FQDNs，RabbitMQ节点和命令行工具必须要配置使用长节点名称。可以使用<code>RABBITMQ_USE_LONGNAME</code>环境变量为<code>true</code>,在命令行工具中，除了可以配置<code>RABBITMQ_USE_LONGNAME</code>环境变量或者<code>--longnames</code>参数。</p>
+<h2 id="集群发现前提">集群发现前提</h2>
+<h3 id="主机名可解析">主机名可解析</h3>
+<p>可以在<code>/etc/hosts</code>中配置主机名来解析主机名。有一些场景，修改hosts文件是不被容许的。erlang虚拟机可以配置使用其他的方法来解析主机名，如配置DNS服务器，指定一个本地的文件，一个非标准hosts文件</p>
+<h3 id="端口可达">端口可达</h3>
+<p>RabbitMQ节点绑定到TCP端口来接受客户端和命令行工具的连接。一些进程和工具如<code>selinux</code>可能会阻止RabbitMQ绑定端口。当绑定端口失败时，RabbitMQ节点启动会失败。<br>
+请保证节点之间的下列端口可访问：</p>
+<ul>
+<li>4369 a helper discovery daemon used by RabbitMQ nodes and CLI tools</li>
+<li>5672,5671 AMQP 0-9-1 和1.0 客户端连接端口</li>
+<li>25672 节点之间通信端口</li>
+<li>15672 HTTP API客户端，管理后台启动端口</li>
+<li>61613, 61614  STOMP clients without and with TLS (only if the STOMP plugin is enabled)</li>
+<li>1883, 8883: (MQTT clients without and with TLS, if the MQTT plugin is enabled</li>
+<li>15674: STOMP-over-WebSockets clients (only if the Web STOMP plugin is enabled)</li>
+<li>15675: MQTT-over-WebSockets clients (only if the Web MQTT plugin is enabled)</li>
+<li>15692: Prometheus metrics (only if the Prometheus plugin is enabled)</li>
+</ul>
+<h2 id="集群节点">集群节点</h2>
+<p>一些分布式系统有leader和follower节点角色，在RabbitMQ中没有这些角色。所有的节点都是一样的，没有特别的节点。<br>
+命令行工具或者HTTP API访问任何一个节点得到的数据都是一致的。<br>
+RabbitMQ节点和命令行工具（如rabbitmqctl）使用一个cookie来决定是否他们可以相互通信。两个节点只有cookie一致才能正常通信。cookie是一段随机字母数字字符串，存储在本地文件。这个文件的权限也要控制，如设置为400或者600。<br>
+如果这个文件不存在，Erlang虚拟机将会在rabbitmq启动的时候创建一个。<br>
+cookie文件路径<br>
+linux、MacOS、*BSD：/var/lib/rabbitmq/.erlang.cookie</p>
+<h3 id="节点数量">节点数量</h3>
+<p>集群中的数量最好为奇数个：1，3，5等等<br>
+两个节点的集群极不推荐</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django-rest-framework]]></title>
+        <id>https://mrpingan.github.io/post/django-rest-framework</id>
+        <link href="https://mrpingan.github.io/post/django-rest-framework">
+        </link>
+        <updated>2020-01-08T13:48:44.000Z</updated>
+        <content type="html"><![CDATA[<p>1、浏览器api界面没有Login按钮</p>
+<pre><code class="language-python">urlpatterns = [
+    path('^api-auth/',include('rest_framework.urls',namespace=&quot;rest_framework_auth&quot;))
+]
+</code></pre>
+<p>需要在<code>urls.py</code>中配置这一条路由，就可以看到登录按钮了<br>
+<img src="https://mrpingan.github.io/post-images/1578491545380.png" alt=""></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[好文一览]]></title>
         <id>https://mrpingan.github.io/post/hao-wen-yi-lan</id>
@@ -425,79 +519,6 @@ deb、rpm、zip、tar、dir、sh、osxpkg、solaris、pkgin、puppet</p>
         <updated>2019-09-16T08:25:02.000Z</updated>
         <content type="html"><![CDATA[<p>在centos和ubuntu上都可以通过这条命令查看版本</p>
 <pre><code>cat /etc/*-release
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[jumpserver 连接ldap]]></title>
-        <id>https://mrpingan.github.io/post/jumpserver-lian-jie-ldap</id>
-        <link href="https://mrpingan.github.io/post/jumpserver-lian-jie-ldap">
-        </link>
-        <updated>2019-09-15T12:57:20.000Z</updated>
-        <content type="html"><![CDATA[<p><img src="https://mrpingan.github.io/post-images/1568552305999.png" alt=""></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[confluence用户数据迁移]]></title>
-        <id>https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi</id>
-        <link href="https://mrpingan.github.io/post/confluence-yong-hu-shu-ju-qian-yi">
-        </link>
-        <updated>2019-09-10T09:45:52.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="环境">环境</h1>
-<p>1、confluence版本：6.15.8<br>
-2、老账号：pingqiangqiang，组：ops，post：This My first Post<br>
-3、新账号：ping，组：none，post，无<br>
-4、达到目标：新账号：ping，组：ops，post：This My first Post</p>
-<h1 id="方案一">方案一</h1>
-<ul>
-<li>调整用户目录顺序,并禁用LDAP用户目录</li>
-</ul>
-<p><img src="https://mrpingan.github.io/post-images/1568116514235.png" alt=""><br>
-此时，confluence读取的用户数据都是本地目录数据，查看文档<br>
-<img src="https://mrpingan.github.io/post-images/1568116630879.png" alt=""><br>
-post的发布者还是老账号</p>
-<ul>
-<li>修改老账号的用户名为ping，并启动LDAP用户目录，调整用户目录顺序</li>
-</ul>
-<p><img src="https://mrpingan.github.io/post-images/1568116799748.png" alt=""><br>
-此时，查看文档<br>
-<img src="https://mrpingan.github.io/post-images/1568116820884.png" alt=""><br>
-post的发布者变成了新账号中的可见名<br>
-查看用户列表<br>
-<img src="https://mrpingan.github.io/post-images/1568116892133.png" alt=""><br>
-只有两个账号，老账号改了名字后，由于登录的时候，LDAP目录排在第一个，wiki先在LDAP中找到<code>ping</code>这个用户，于是认证成功可以登录。<br>
-查看所属组<br>
-<img src="https://mrpingan.github.io/post-images/1568117006765.png" alt=""><br>
-发现直接继承了老账号<code>ping</code>的所属组。这是因为，在LDAP配置中，我们没有使用LDAP里面的目录结构。组都在wiki中授权，而且，wiki把用户名当唯一标识符，所以任务两个账号是同一个账号。<br>
-目前测试，这种方案可行。</p>
-<h1 id="方案二">方案二</h1>
-<p>可参考连接：https://confluence.atlassian.com/confkb/how-to-merge-two-users-content-ownership-and-permissions-in-confluence-957149073.html</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[confluence连接ldaps]]></title>
-        <id>https://mrpingan.github.io/post/confluence-lian-jie-ldaps</id>
-        <link href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">
-        </link>
-        <updated>2019-09-10T04:22:51.000Z</updated>
-        <content type="html"><![CDATA[<p><img src="https://mrpingan.github.io/post-images/1568089430883.png" alt=""></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[LDAP ubuntu phpldapadmin]]></title>
-        <id>https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin</id>
-        <link href="https://mrpingan.github.io/post/ldap-ubuntu-phpldapadmin">
-        </link>
-        <updated>2019-09-08T05:54:11.000Z</updated>
-        <content type="html"><![CDATA[<p>https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-an-ubuntu-14-04-server</p>
-<h1 id="phpldapadmin连接ldaps">phpldapadmin连接ldaps</h1>
-<p>这儿的ssl证书是第三方授权的证书，phpldapadmin的配置文件如下</p>
-<pre><code class="language-php">$servers-&gt;setValue('server','name','My LDAP Server');
-$servers-&gt;setValue('server','host','ldaps://test-ldap.ping.net/');
-$servers-&gt;setValue('server','port',636);
-$servers-&gt;setValue('server','base',array('dc=ping,dc=net'));
-$servers-&gt;setValue('login','auth_type','session');
-$servers-&gt;setValue('login','bind_id','cn=admin,dc=ping,dc=net');
 </code></pre>
 ]]></content>
     </entry>
