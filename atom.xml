@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-10T03:49:47.394Z</updated>
+    <updated>2020-03-22T02:14:48.289Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,20 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[iptables查看数据包传输过程]]></title>
+        <id>https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng</id>
+        <link href="https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng">
+        </link>
+        <updated>2020-03-22T02:11:02.000Z</updated>
+        <content type="html"><![CDATA[<p>docker容器和宿主机在通过docker0网桥通信时，linux内核netfilter也参与其中，如果使用的iptables，可通过开启iptables的TRACE功能，查看数据包的传输过程。</p>
+<pre><code class="language-linux"># 在宿主机上执行
+iptables -t raw -A OUTPUT -p icmp -j TRACE
+iptables -t raw -A PREROUTING -p icmp -j TRACE
+</code></pre>
+<p>通过上述设置，就可以在<code>/var/log/syslog</code>里看到数据包传输的过程了。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ubuntu 安装es]]></title>
         <id>https://mrpingan.github.io/post/ubuntu-an-zhuang-es</id>
@@ -509,17 +523,6 @@ fpm (1.11.0)
 dir、tar、gem、python、pear、cpan、zip、npm、osxpkg、empty、deb、rpm</p>
 <p>支持的目标格式：<br>
 deb、rpm、zip、tar、dir、sh、osxpkg、solaris、pkgin、puppet</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[查看发行版版本]]></title>
-        <id>https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben</id>
-        <link href="https://mrpingan.github.io/post/cha-kan-fa-xing-ban-ban-ben">
-        </link>
-        <updated>2019-09-16T08:25:02.000Z</updated>
-        <content type="html"><![CDATA[<p>在centos和ubuntu上都可以通过这条命令查看版本</p>
-<pre><code>cat /etc/*-release
-</code></pre>
 ]]></content>
     </entry>
 </feed>
