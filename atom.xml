@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-22T02:14:48.289Z</updated>
+    <updated>2020-03-24T15:40:41.051Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,29 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[nginx防止爬虫爬页面]]></title>
+        <id>https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian</id>
+        <link href="https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian">
+        </link>
+        <updated>2020-03-24T15:33:27.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="方法一">方法一</h1>
+<p>修改nginx，匹配到爬虫的ua，直接返回403</p>
+<pre><code class="language-nginx">server { 
+	listen 80; 
+	server_name 127.0.0.1; 
+	#添加如下内容即可防止爬虫
+	if ($http_user_agent ~* “qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot”) 
+	return 403; 
+} 
+</code></pre>
+<h1 id="方法二">方法二</h1>
+<p>网站下增加<strong>Robots.txt</strong>，放在站点根目录<br>
+在http://tool.chinaz.com/robots/站点可以针对现在的搜索引擎按照想要的规则生成robots.txt文件。<br>
+robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。robots.txt文件告诉蜘蛛程序在服务器上什么文件是可以被查看的。<br>
+当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。百度官方建议，仅当您的网站包含不希望被搜索引擎收录的内容时，才需要使用robots.txt文件。如果您希望搜索引擎收录网站上所有内容，请勿建立robots.txt文件。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[iptables查看数据包传输过程]]></title>
         <id>https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng</id>
@@ -367,162 +390,6 @@ olcDbIndex: entryCSN eq
 <p>2、添加用户<br>
 在master01上添加用户，看master02上是否被同步</p>
 <p>验证通过！</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ubuntu14安装FPM]]></title>
-        <id>https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm</id>
-        <link href="https://mrpingan.github.io/post/ubuntu14-an-zhuang-fpm">
-        </link>
-        <updated>2019-09-16T08:43:52.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="介绍">介绍</h1>
-<p>不同的linux发行版都有不同的包管理工具。例如，Fedora和Redhat都使用<code>.rpm</code>格式的包，Debian和Ubuntu使用<code>.deb</code>格式的包。这些包是不兼容的，而且要熟悉创建不同包的方式也很费时间。<br>
-为了最小化创建包的复杂度，我们可以使用<code>fpm</code>工具。使用<code>fpm</code>,你可以很容易的同时创建<code>.rpm</code>和<code>.deb</code>文件。是不是很酷！下面在<code>ubuntu 14</code>的环境演示。</p>
-<h1 id="安装fpm">安装fpm</h1>
-<p>fpm是ruby语言写的工具，所以要安装ruby环境</p>
-<pre><code>apt-get update
-apt-get install ruby-dev build-essential
-</code></pre>
-<p>查看ruby版本，如果版本低于2.0，安装fpm1.11.0的过程中将会报错</p>
-<pre><code>ruby -v
-</code></pre>
-<p>安装fpm</p>
-<pre><code>gem install fpm
-</code></pre>
-<p>安装完成后，检验fpm</p>
-<pre><code>fpm -help
-</code></pre>
-<pre><code>Intro:
-
-  This is fpm version 1.11.0
-
-  If you think something is wrong, it's probably a bug! :)
-  Please file these here: https://github.com/jordansissel/fpm/issues
-
-  You can find support on irc (#fpm on freenode irc) or via email with
-  fpm-users@googlegroups.com
-
-Loaded package types:
-...
-</code></pre>
-<h2 id="如果ruby版本低于20">如果ruby版本低于2.0</h2>
-<p>如果ruby版本低于2.0，需要安装高版本ruby。我们使用<code>rvm</code>工具去安装ruby高版本</p>
-<h3 id="安装rvm">安装rvm</h3>
-<p>参考rvm地址：<a href="http://rvm.io/">rvm官网</a><br>
-安装gpg2命令</p>
-<pre><code>apt-get install gnupg2
-</code></pre>
-<p>安装GPG 2公钥</p>
-<pre><code>gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-</code></pre>
-<p>安装rvm</p>
-<pre><code>\curl -sSL https://get.rvm.io | bash -s stable
-</code></pre>
-<p>输出如下：</p>
-<pre><code>Downloading https://github.com/rvm/rvm/archive/1.29.9.tar.gz
-Downloading https://github.com/rvm/rvm/releases/download/1.29.9/1.29.9.tar.gz.asc
-gpg: Signature made Wed 10 Jul 2019 08:31:02 AM UTC using RSA key ID 39499BDB
-gpg: Good signature from &quot;Piotr Kuczynski &lt;piotr.kuczynski@gmail.com&gt;&quot;
-gpg: WARNING: This key is not certified with a trusted signature!
-gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: 7D2B AF1C F37B 13E2 069D  6956 105B D0E7 3949 9BDB
-GPG verified '/usr/local/rvm/archives/rvm-1.29.9.tgz'
-Creating group 'rvm'
-Installing RVM to /usr/local/rvm/
-Installation of RVM in /usr/local/rvm/ is almost complete:
-
-  * First you need to add all users that will be using rvm to 'rvm' group,
-    and logout - login again, anyone using rvm will be operating with `umask u=rwx,g=rwx,o=rx`.
-
-  * To start using RVM you need to run `source /etc/profile.d/rvm.sh`
-    in all your open shell windows, in rare cases you need to reopen all shell windows.
-  * Please do NOT forget to add your users to the rvm group.
-     The installer no longer auto-adds root or users to the rvm group. Admins must do this.
-     Also, please note that group memberships are ONLY evaluated at login time.
-     This means that users must log out then back in before group membership takes effect!
-Thanks for installing RVM 🙏
-Please consider donating to our open collective to help us maintain RVM.
-
-👉  Donate: https://opencollective.com/rvm/donate
-</code></pre>
-<p>加载环境变量</p>
-<pre><code>source /usr/local/rvm/scripts/rvm
-</code></pre>
-<p>现在可以使用rvm命令了,查看可安装的ruby版本</p>
-<pre><code>rvm list known
-</code></pre>
-<p>安装ruby 2.3</p>
-<pre><code>rvm install 2.3
-</code></pre>
-<p>再通过<code>ruby -v</code>查看版本是否变为2.3</p>
-<h1 id="熟悉fpm基本功能">熟悉fpm基本功能</h1>
-<p>fpm 命令行的基本格式</p>
-<pre><code>fpm -s source_type -t target_type source_name_or_location
-</code></pre>
-<h2 id="把一个gem包转变为deb包">把一个gem包转变为deb包</h2>
-<p>bundler是一个常见的gem包</p>
-<pre><code>fpm -s gem -t deb bundler
-</code></pre>
-<pre><code>Debian packaging tools generally labels all files in /etc as config files, as mandated by policy, so fpm defaults to this behavior for deb packages. You can disable this default behavior with --deb-no-default-config-files flag {:level=&gt;:warn}
-Created package {:path=&gt;&quot;rubygem-bundler_2.0.2_all.deb&quot;}
-</code></pre>
-<p>再当前目录就可以看到生成了<code>rubygem-bundler_2.0.2_all.deb</code>安装包<br>
-看看安装会不会有问题<br>
-查看当前的gem列表</p>
-<pre><code>root@client:~# gem list
-
-*** LOCAL GEMS ***
-
-arr-pm (0.0.10)
-backports (3.15.0)
-bigdecimal (default: 1.2.8)
-bundler (default: 1.16.2)
-bundler-unload (1.0.2)
-cabin (0.9.0)
-childprocess (0.9.0)
-clamp (1.0.1)
-did_you_mean (1.0.0)
-dotenv (2.7.5)
-executable-hooks (1.5.0)
-ffi (1.11.1)
-fpm (1.11.0)
-gem-wrappers (1.4.0)
-insist (1.0.0)
-io-console (default: 0.4.5)
-io-like (0.3.0)
-...
-</code></pre>
-<p>可以看到bundler的版本是1.16.2，我们打包的版本是2.0.2<br>
-安装bundler</p>
-<pre><code>dpkg -i rubygem-bundler_2.0.2_all.deb
-</code></pre>
-<p>再次查看gem安装列表</p>
-<pre><code>root@client:~# gem list
-
-*** LOCAL GEMS ***
-
-arr-pm (0.0.10)
-backports (3.15.0)
-bigdecimal (default: 1.2.8)
-bundler (2.0.2, default: 1.16.2)
-bundler-unload (1.0.2)
-cabin (0.9.0)
-childprocess (0.9.0)
-clamp (1.0.1)
-did_you_mean (1.0.0)
-dotenv (2.7.5)
-executable-hooks (1.5.0)
-ffi (1.11.1)
-fpm (1.11.0)
-...
-</code></pre>
-<p>看到bundler的版本变为2.0.2了。<br>
-这是把gem包转变为deb包，属于包类型之间的转换</p>
-<h1 id="源格式和目标格式">源格式和目标格式</h1>
-<p>fpm支持下面的源格式:<br>
-dir、tar、gem、python、pear、cpan、zip、npm、osxpkg、empty、deb、rpm</p>
-<p>支持的目标格式：<br>
-deb、rpm、zip、tar、dir、sh、osxpkg、solaris、pkgin、puppet</p>
 ]]></content>
     </entry>
 </feed>
