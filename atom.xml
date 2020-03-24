@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-24T16:30:08.062Z</updated>
+    <updated>2020-03-24T16:31:30.990Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,43 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[ansible执行速度优化]]></title>
+        <id>https://mrpingan.github.io/post/ansible-zhi-xing-su-du-you-hua</id>
+        <link href="https://mrpingan.github.io/post/ansible-zhi-xing-su-du-you-hua">
+        </link>
+        <updated>2020-03-24T16:17:10.000Z</updated>
+        <content type="html"><![CDATA[<p>ansible没有agent，采用ssh来通讯，在机器数量达到一个量级的时候，执行流程会变得很慢。这儿提供一些优化思路</p>
+<h1 id="优化一facts">优化一：facts</h1>
+<p>默认情况下，ansible会收集远程机器的facts变量，playbook中可以使用这些变量。如果没有使用facts中的值，也可以关闭这个选项gather_facts: False，提高执行效率<br>
+也可以开启facts缓存，ansible支持json文件缓存，配置如下:</p>
+<pre><code class="language-ini"># /etc/ansible/ansible.cfg
+gathering = smart
+fact_caching_timeout = 86400
+fact_caching = jsonfile
+fact_caching_connection = /dev/shm/ansible_fact_cache
+</code></pre>
+<h1 id="优化二openssl长连接">优化二：openssl长连接</h1>
+<p>openssl高版本支持多路复用，也就是开启一个长连接，开启后，会通过一个socket文件与远程设备保存一个长连接</p>
+<pre><code>#调整ssh配置
+ssh_args = -C -o ControlMaster=auto -o ControlPersist=5d
+</code></pre>
+<h1 id="优化三pipeline">优化三：pipeline</h1>
+<p>开启pipeline后，ansible不再将本地生成好的python脚本发送到远程机器，而是直接复用ssh回话进行，这将大大提高整个执行效率<br>
+当然，开启pipeline，需要被控机器/etc/sudoers文件编辑当前ansible ssh用户的配置为requiretty,否则在执行ansible的时候会报错</p>
+<pre><code>pipelining = True
+</code></pre>
+<h1 id="优化四开启accelerate模式">优化四：开启accelerate模式</h1>
+<p>开启accelerate后，ansible会在远程机器上启动一个守护进程，控制端会通过这个守护进程进行通讯。<br>
+需要注意的是，如果开启此模式，则需要控制端和被控端都需要安装<code>python-keyczar</code>安装包。<br>
+定义参数：</p>
+<pre><code>[accelerate]
+accelerate_port = 5099
+accelerate_timeout = 30
+accelerate_connect_timeout = 5.0
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[自动化运维工具比较]]></title>
         <id>https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao</id>
@@ -270,27 +307,6 @@ Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to
 <p>参考文档：<br>
 https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html#HowtoimportapublicSSLcertificateintoaJVM-commandline</p>
 <p>https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ubuntu 安装问题]]></title>
-        <id>https://mrpingan.github.io/post/ubuntu-an-zhuang-wen-ti</id>
-        <link href="https://mrpingan.github.io/post/ubuntu-an-zhuang-wen-ti">
-        </link>
-        <updated>2019-11-11T11:55:22.000Z</updated>
-        <content type="html"><![CDATA[<p>问题片段</p>
-<pre><code>sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-sh: 0: getcwd() failed: No such file or directory
-</code></pre>
-<p>解决：</p>
-<ul>
-<li>到root目录下区执行命令</li>
-</ul>
 ]]></content>
     </entry>
 </feed>

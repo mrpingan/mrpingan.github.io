@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>Hello Gridea | Ping&#39;s Home</title>
+<title>ansible执行速度优化 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,51 +80,54 @@
       <div class="content-container">
         <div class="post-detail">
           
-            <div class="feature-container" style="background-image: url('https://mrpingan.github.io/post-images/hello-gridea.png')">
-            </div>
-          
-          <h2 class="post-title">Hello Gridea</h2>
+          <h2 class="post-title">ansible执行速度优化</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2018-12-12</span>
-            
-              <span>
-                <i class="icon-pricetags-outline"></i>
-                
-                  <a href="https://mrpingan.github.io/tag/gridea">
-                    Gridea
-                    
-                  </a>
-                
-              </span>
+            <span><i class="icon-calendar-outline"></i> 2020-03-25</span>
             
           </div>
           <div class="post-content">
-            <p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<!-- more -->
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="http://hvenotes.fehey.com/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>𝖶𝗂𝗇𝖽𝗈𝗐𝗌</strong> 或 <strong>𝖬𝖺𝖼𝖮𝖲</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
+            <p>ansible没有agent，采用ssh来通讯，在机器数量达到一个量级的时候，执行流程会变得很慢。这儿提供一些优化思路</p>
+<h1 id="优化一facts">优化一：facts</h1>
+<p>默认情况下，ansible会收集远程机器的facts变量，playbook中可以使用这些变量。如果没有使用facts中的值，也可以关闭这个选项gather_facts: False，提高执行效率<br>
+也可以开启facts缓存，ansible支持json文件缓存，配置如下:</p>
+<pre><code class="language-ini"># /etc/ansible/ansible.cfg
+gathering = smart
+fact_caching_timeout = 86400
+fact_caching = jsonfile
+fact_caching_connection = /dev/shm/ansible_fact_cache
+</code></pre>
+<h1 id="优化二openssl长连接">优化二：openssl长连接</h1>
+<p>openssl高版本支持多路复用，也就是开启一个长连接，开启后，会通过一个socket文件与远程设备保存一个长连接</p>
+<pre><code>#调整ssh配置
+ssh_args = -C -o ControlMaster=auto -o ControlPersist=5d
+</code></pre>
+<h1 id="优化三pipeline">优化三：pipeline</h1>
+<p>开启pipeline后，ansible不再将本地生成好的python脚本发送到远程机器，而是直接复用ssh回话进行，这将大大提高整个执行效率<br>
+当然，开启pipeline，需要被控机器/etc/sudoers文件编辑当前ansible ssh用户的配置为requiretty,否则在执行ansible的时候会报错</p>
+<pre><code>pipelining = True
+</code></pre>
+<h1 id="优化四开启accelerate模式">优化四：开启accelerate模式</h1>
+<p>开启accelerate后，ansible会在远程机器上启动一个守护进程，控制端会通过这个守护进程进行通讯。<br>
+需要注意的是，如果开启此模式，则需要控制端和被控端都需要安装<code>python-keyczar</code>安装包。<br>
+定义参数：</p>
+<pre><code>[accelerate]
+accelerate_port = 5099
+accelerate_timeout = 30
+accelerate_connect_timeout = 5.0
+</code></pre>
 
           </div>
         </div>
 
         
+          <div class="next-post">
+            <a class="purple-link" href="https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao">
+              <h3 class="post-title">
+                下一篇：自动化运维工具比较
+              </h3>
+            </a>
+          </div>
+          
       </div>
 
       
