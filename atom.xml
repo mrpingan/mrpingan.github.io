@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-25T06:16:20.555Z</updated>
+    <updated>2020-03-26T15:15:11.606Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,52 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[linux命令]]></title>
+        <id>https://mrpingan.github.io/post/linux-ming-ling</id>
+        <link href="https://mrpingan.github.io/post/linux-ming-ling">
+        </link>
+        <updated>2020-03-26T14:50:53.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="io重定向">I/O重定向</h1>
+<h2 id="cat往文件写内容">cat往文件写内容</h2>
+<p>这个命令使用了<code>&gt;</code>表示覆盖，如果是<code>&gt;&gt;</code>则表示追加</p>
+<pre><code class="language-bash">cat &gt;foo.sh &lt;&lt;EOF
+print &quot;$s was here&quot; &quot;$name&quot;
+EOF
+</code></pre>
+<p><code>foo.sh</code>显示结果如下，发现变量<code>$name</code>被解析了</p>
+<pre><code class="language-bash">print &quot;%s was here&quot; &quot;&quot;
+</code></pre>
+<p>避免变量被解析，可以这样做，在<strong>EOF</strong>之前加了一个****</p>
+<pre><code class="language-bash">cat &gt;foo.sh &lt;&lt;\EOF
+print &quot;$s was here&quot; &quot;$name&quot;
+EOF
+</code></pre>
+<p>这样变量<code>$name</code>就不会被解析了</p>
+<h1 id="创建一个管道">创建一个管道</h1>
+<pre><code class="language-bash">mkfifo /tmp/pipe
+</code></pre>
+<p>可以一个程序写，另外一个程序读</p>
+<h1 id="创建一个临时文件或者目录">创建一个临时文件或者目录</h1>
+<p>创建临时文件</p>
+<pre><code class="language-bash">mktemp
+# 指定后缀长度和dirname,X必须要为大写
+mktemp /tmp/tmp-XXX
+mktemp ~/tmp-XXX
+</code></pre>
+<p>创建临时目录</p>
+<pre><code class="language-bash">mktemp -d 
+#也可以指定后缀长度和dirname
+mktemp -d /tmp/tmp.XXXX
+mktemp -d ~/tmp.XXXX
+</code></pre>
+<h1 id="history">History</h1>
+<p>从安全角度考虑，禁止<code>history</code></p>
+<pre><code>ln -s /dev/null .bash_history
+</code></pre>
+<hr/>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ansible执行速度优化]]></title>
         <id>https://mrpingan.github.io/post/ansible-zhi-xing-su-du-you-hua</id>
@@ -256,59 +302,6 @@ http://www.ziawang.com/article/169/</p>
 https://sourcegraph.com/github.com/zhuinfo/Django-ERP/-/blob/plugin/wfusers.py</p>
 <p>站点：<br>
 http://devopstarter.info/page/9/</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[java项目ssl 证书验证错误]]></title>
-        <id>https://mrpingan.github.io/post/java-xiang-mu-ssl-zheng-shu-yan-zheng-cuo-wu</id>
-        <link href="https://mrpingan.github.io/post/java-xiang-mu-ssl-zheng-shu-yan-zheng-cuo-wu">
-        </link>
-        <updated>2019-11-20T12:38:49.000Z</updated>
-        <content type="html"><![CDATA[<p>在java1.7的项目中启动java项目配置了ssl，报了如下错误</p>
-<pre><code>sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:385)
-	at sun.security.validator.PKIXValidator.engineValidate(PKIXValidator.java:292)
-	at sun.security.validator.Validator.validate(Validator.java:260)
-	at sun.security.ssl.X509TrustManagerImpl.validate(X509TrustManagerImpl.java:326)
-	at sun.security.ssl.X509TrustManagerImpl.checkTrusted(X509TrustManagerImpl.java:231)
-	at sun.security.ssl.X509TrustManagerImpl.checkServerTrusted(X509TrustManagerImpl.java:126)
-	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1428)
-	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:209)
-	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:913)
-	at sun.security.ssl.Handshaker.process_record(Handshaker.java:849)
-	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1023)
-	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1332)
-	at sun.security.ssl.SSLSocketImpl.writeRecord(SSLSocketImpl.java:709)
-	at sun.security.ssl.AppOutputStream.write(AppOutputStream.java:122)
-	at sun.security.ssl.AppOutputStream.write(AppOutputStream.java:136)
-	at SSLPoke.main(SSLPoke.java:31)
-Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-	at sun.security.provider.certpath.SunCertPathBuilder.engineBuild(SunCertPathBuilder.java:196)
-	at java.security.cert.CertPathBuilder.build(CertPathBuilder.java:268)
-	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:380)
-	... 15 more
-</code></pre>
-<p>虽然我申请的证书是权威机构认证的CA。这个错误指的是证书不被验证，可能有如下原因：</p>
-<ul>
-<li>证书是自签名证书，需要在keystore中导入自签名的CA</li>
-<li>&lt;JAVA_HOME&gt;/jre/lib/security/cacerts文件太旧，没有包含最新的CA</li>
-<li>证书错误</li>
-</ul>
-<p>针对前两种错误，需要把证书导入到keystore中</p>
-<h2 id="导入证书到keystore中">导入证书到keystore中</h2>
-<h3 id="命令行导出证书">命令行导出证书</h3>
-<p>Unix(需要把google.com改成自己对应的域名):</p>
-<pre><code>openssl s_client -connect google.com:443 -servername google.com:443 &lt; /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' &gt; public.crt
-</code></pre>
-<p>windows：</p>
-<pre><code>openssl s_client -connect google.com:443 -servername google.com:443 &lt; NUL | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' &gt; public.crt
-</code></pre>
-<h3 id="导入证书到keystore">导入证书到keystore</h3>
-<pre><code>&lt;JAVA_HOME&gt;/bin/keytool -import -alias &lt;server_name&gt; -keystore &lt;JAVA_HOME&gt;/jre/lib/security/cacerts -file public.crt
-</code></pre>
-<p>参考文档：<br>
-https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html#HowtoimportapublicSSLcertificateintoaJVM-commandline</p>
-<p>https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html</p>
 ]]></content>
     </entry>
 </feed>
