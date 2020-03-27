@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-27T02:42:06.988Z</updated>
+    <updated>2020-03-27T03:34:21.548Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -108,7 +108,7 @@ bash -x
 </tr>
 </tbody>
 </table>
-<h1 id="字符串截取">字符串截取</h1>
+<h1 id="字符串处理">字符串处理</h1>
 <h2 id="左删除">左删除</h2>
 <p>从左边往右边匹配</p>
 <pre><code class="language-bash"># 删除第一个匹配fo以及左边
@@ -136,6 +136,81 @@ MYVAR=anfoodforthought.jpg
 echo ${MYVAR%%fo*}
 #结果
 an
+</code></pre>
+<h2 id="字符串截取">字符串截取</h2>
+<pre><code class="language-bash">#从n1到n2截取字符串
+${varible:n1:n2}
+
+MYVAR1=cowbody
+echo ${MYVAR1:0:3}
+#结果
+cow
+
+echo ${MYVAR1: -3}
+#结果
+ody
+</code></pre>
+<h1 id="数组">数组</h1>
+<h2 id="创建数组">创建数组</h2>
+<pre><code class="language-bash">arr=(hello world)
+#或者
+arr[0]=hello
+arr[1]=world
+
+echo ${arr[0] arr[1]}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>${arr[*]}</td>
+<td>列出数组中所有的值</td>
+</tr>
+<tr>
+<td>${!arr[*]}</td>
+<td>数组中所有的索引</td>
+</tr>
+<tr>
+<td>${#arr[*]}</td>
+<td>数组中元素个数</td>
+</tr>
+<tr>
+<td>${#arr[0]}</td>
+<td>数组中索引0的元素长度</td>
+</tr>
+</tbody>
+</table>
+<h1 id="eval">eval</h1>
+<pre><code class="language-bash">i=5
+a_5=250
+echo \$&quot;a_$i&quot;
+#结果
+250
+
+neo=&quot;Neo Chen&quot;
+name=neo
+eval &quot;echo \$$name&quot;
+#结果
+Neo Chen
+
+</code></pre>
+<h1 id="for">for</h1>
+<pre><code class="language-bash">for ((i=1;i&lt;5;i++))
+do
+		echo $i
+		sleep $i
+done
+
+for i in {1..5}
+do
+	echo $i
+	sleep $i
+done
 </code></pre>
 ]]></content>
     </entry>
