@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>Django学习 | Ping&#39;s Home</title>
+<title>nginx | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -78,52 +78,48 @@
 
 
       <div class="content-container">
-        <div class="post-detail">
-          
-          <h2 class="post-title">Django学习</h2>
-          <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2019-09-02</span>
-            
-          </div>
-          <div class="post-content">
-            <h2 id="命名空间">命名空间</h2>
-<p>当url有多个组时候，为了避免url重复导致请求被路由到其他视图上，可以使用命名空间的方式，这样即使不通命名空间的url一样，也不会影响。<br>
-1、在子url中指明app_name</p>
-<pre><code>
-from django.urls import path
-from . import views
 
-app_name = 'blog'
-
-urlpatterns = [
-    path('',view.post),
-]
-</code></pre>
-<p>2、在父url中引用namespace</p>
-<pre><code>
-from django.urls import path,include
-from django.contrib import admin
-
-urlpatterns = [
-    path('blog/',include('blog.urls',namespace='blog')),
-]
-</code></pre>
-
-          </div>
+        <div class="current-tag-container">
+          <h2 class="title">
+            <i class="icon icon-pricetags-outline"></i> nginx
+          </h2> 
         </div>
 
         
-          <div class="next-post">
-            <a class="purple-link" href="https://mrpingan.github.io/post/maven-da-bao-zhan-yi-chu-de-wen-ti">
-              <h3 class="post-title">
-                下一篇：maven打包栈溢出的问题
-              </h3>
-            </a>
-          </div>
-          
+<section class="post-item">
+    <div class="content">
+      <a href="https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian">
+        <h2 class="post-title">nginx防止爬虫爬页面</h2>
+      </a>
+      <div class="post-abstract">
+        
       </div>
+      <div class="post-info">
+        <span><i class="icon icon-calendar-outline"></i> 2020-03-24</span>
+        
+          <span>
+            <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="https://mrpingan.github.io/tag/YSOhyUHxZ">
+                nginx
+                
+              </a>
+            
+          </span>
+        
+      </div>
+    </div>
+    
+  </section>
 
-      
+
+<div class="pagination-container">
+  
+  
+</div>
+
+
+      </div>
 
       <div class="site-footer">
   <div class="slogan">温故而知新</div>
