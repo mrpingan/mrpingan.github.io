@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1585280058860">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1585280407268">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io">
-        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1585280058860" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1585280407268" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -280,17 +280,22 @@ Neo Chen
 
 </code></pre>
 <h1 id="for">for</h1>
-<pre><code class="language-bash">for ((i=1;i&lt;5;i++))
+<pre><code class="language-bash">#示例1：
+for ((i=1;i&lt;5;i++))
 do
 		echo $i
 		sleep $i
 done
-
+#示例2:
 for i in {1..5}
 do
 	echo $i
 	sleep $i
 done
+#示例3:
+for i in `seq 1 10`;do echo $i;done
+#示例4:
+for i in {1..10} {20..30} {40..50};do mkdir $i;done
 </code></pre>
 
           </div>
