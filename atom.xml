@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-26T15:15:11.606Z</updated>
+    <updated>2020-03-27T02:36:29.803Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -54,6 +54,89 @@ mktemp -d ~/tmp.XXXX
 <pre><code>ln -s /dev/null .bash_history
 </code></pre>
 <hr/>
+<h1 id="bash">bash</h1>
+<pre><code class="language-bash"># 检查语法
+bash -n
+
+# 显示详细过程
+bash -x
+</code></pre>
+<h1 id="内部环境变量">内部环境变量</h1>
+<h2 id="set">set</h2>
+<h2 id="export">export</h2>
+<h2 id="unset">unset</h2>
+<h1 id="系统变量">系统变量</h1>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$n</td>
+<td>$1表示第一个参数，$2表示第二个参数</td>
+</tr>
+<tr>
+<td>$#</td>
+<td>表示参数的个数</td>
+</tr>
+<tr>
+<td>$0</td>
+<td>当前程序的名称</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>前一个程序的返回码</td>
+</tr>
+<tr>
+<td>$*</td>
+<td>以&quot;参数1 参数2 ...&quot;形式保存所有变量</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>以&quot;参数1&quot;&quot;参数2&quot;...形式保存所有变量</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>本程序的PID</td>
+</tr>
+<tr>
+<td>$!</td>
+<td>上个命令</td>
+</tr>
+</tbody>
+</table>
+<h1 id="字符串截取">字符串截取</h1>
+<h2 id="左删除">左删除</h2>
+<p>从左边往右边匹配</p>
+<pre><code class="language-bash"># 删除第一个匹配fo以及左边
+MYVAR=foodforthought.jpg
+echo ${MYVAR#*fo}
+#结果
+odforthought.jpg
+
+# 删除最后一个匹配fo以及左边
+MYVAR=foodforthought.jpg
+echo ${MYVAR##*fo}
+# 结果
+rthought.jpg
+</code></pre>
+<h2 id="右删除">右删除</h2>
+<p>从右边往左边匹配</p>
+<pre><code class="language-bash">#删除第一个匹配fo及其右边的字符
+MYVAR=foodforthought.jpg
+echo ${MYVAR%fo*}
+#结果
+food
+
+#从右往左删除最后一个匹配fo及其右边的字符
+MYVAR=anfoodforthought.jpg
+echo ${MYVAR%%fo*}
+#结果
+an
+</code></pre>
 ]]></content>
     </entry>
     <entry>
