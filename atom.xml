@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-27T06:13:05.763Z</updated>
+    <updated>2020-03-27T06:13:35.518Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -16,8 +16,7 @@
         <link href="https://mrpingan.github.io/post/linux-ming-ling">
         </link>
         <updated>2020-03-26T14:50:53.000Z</updated>
-        <content type="html"><![CDATA[<p>[toc]</p>
-<h1 id="io重定向">I/O重定向</h1>
+        <content type="html"><![CDATA[<h1 id="io重定向">I/O重定向</h1>
 <h2 id="cat往文件写内容">cat往文件写内容</h2>
 <p>这个命令使用了<code>&gt;</code>表示覆盖，如果是<code>&gt;&gt;</code>则表示追加</p>
 <pre><code class="language-bash">cat &gt;foo.sh &lt;&lt;EOF
