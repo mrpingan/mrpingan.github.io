@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-03-27T03:41:02.083Z</updated>
+    <updated>2020-03-27T06:10:53.133Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -16,7 +16,8 @@
         <link href="https://mrpingan.github.io/post/linux-ming-ling">
         </link>
         <updated>2020-03-26T14:50:53.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="io重定向">I/O重定向</h1>
+        <content type="html"><![CDATA[<p>[toc]</p>
+<h1 id="io重定向">I/O重定向</h1>
 <h2 id="cat往文件写内容">cat往文件写内容</h2>
 <p>这个命令使用了<code>&gt;</code>表示覆盖，如果是<code>&gt;&gt;</code>则表示追加</p>
 <pre><code class="language-bash">cat &gt;foo.sh &lt;&lt;EOF
@@ -216,6 +217,15 @@ done
 for i in `seq 1 10`;do echo $i;done
 #示例4:
 for i in {1..10} {20..30} {40..50};do mkdir $i;done
+</code></pre>
+<h1 id="find">find</h1>
+<pre><code>find pathname -options [-print -exec -ok ...]
+-print：将匹配到的文件输出到标准输出
+-exec：find命令对匹配的文件执行给出的shell命令。相应的形式为'command {} ;' ,注意{}和；有一个空格
+-ok：和-exec的用法相同，只是以一个更安全的模式来执行给出的shell命令，只执行每个命令之前都会给出提示。
+
+find . -type f -mtime +5 -exec rm { } ;
+
 </code></pre>
 ]]></content>
     </entry>
