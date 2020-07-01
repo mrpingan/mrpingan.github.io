@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>关于 | Ping&#39;s Home</title>
+<title>jenkins pipeline暂停 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,18 +80,37 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">关于</h2>
+          <h2 class="post-title">jenkins pipeline暂停</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2019-01-25</span>
+            <span><i class="icon-calendar-outline"></i> 2020-07-01</span>
             
           </div>
           <div class="post-content">
-            <p>这是关于的页面，可以在这里向世界介绍你！</p>
+            <p>pipeline中可以进行暂停操作，这在进行高风险操作的时候特别有用。比如，有两台服务器，部署了一台，需要先测试观察日志，就可以在部署这台的stage后加入暂停stage。</p>
+<pre><code class="language-groovy">stage('input') {
+		input {
+				message &quot;Should we continue?&quot;
+				ok &quot;Yes, we should.&quot;
+		}
+		steps {
+				echo &quot;continue...&quot;
+		}
+}
+</code></pre>
+<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。</p>
 
           </div>
         </div>
 
         
+          <div class="next-post">
+            <a class="purple-link" href="https://mrpingan.github.io/post/django">
+              <h3 class="post-title">
+                下一篇：Django
+              </h3>
+            </a>
+          </div>
+          
       </div>
 
       

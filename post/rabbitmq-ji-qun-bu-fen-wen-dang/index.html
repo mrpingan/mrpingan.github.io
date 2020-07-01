@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1586342086764">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1593589638042">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io">
-        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1586342086764" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1593589638042" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -130,6 +130,14 @@ linux、MacOS、*BSD：/var/lib/rabbitmq/.erlang.cookie</p>
 <h3 id="节点数量">节点数量</h3>
 <p>集群中的数量最好为奇数个：1，3，5等等<br>
 两个节点的集群极不推荐</p>
+<h2 id="集群移除节点">集群移除节点</h2>
+<pre><code># 将待移除节点停止rabbit-server服务
+systemctl stop rabbitmq-server
+
+# 连接到集群使用命令forget_cluster_node移除节点  -n 连接到节点
+rabbitmqctl -n rabbit@aws-va-1a-rabbitmq-prod01 forget_cluster_node rabbit@aws-va-1a-rabbitmq-prod03
+
+</code></pre>
 
           </div>
         </div>

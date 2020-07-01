@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-04-08T10:34:49.987Z</updated>
+    <updated>2020-07-01T07:47:24.964Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,53 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[jenkins pipeline暂停]]></title>
+        <id>https://mrpingan.github.io/post/jenkins-pipeline-zan-ting</id>
+        <link href="https://mrpingan.github.io/post/jenkins-pipeline-zan-ting">
+        </link>
+        <updated>2020-07-01T07:43:34.000Z</updated>
+        <content type="html"><![CDATA[<p>pipeline中可以进行暂停操作，这在进行高风险操作的时候特别有用。比如，有两台服务器，部署了一台，需要先测试观察日志，就可以在部署这台的stage后加入暂停stage。</p>
+<pre><code class="language-groovy">stage('input') {
+		input {
+				message &quot;Should we continue?&quot;
+				ok &quot;Yes, we should.&quot;
+		}
+		steps {
+				echo &quot;continue...&quot;
+		}
+}
+</code></pre>
+<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django]]></title>
+        <id>https://mrpingan.github.io/post/django</id>
+        <link href="https://mrpingan.github.io/post/django">
+        </link>
+        <updated>2020-04-20T16:22:22.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="django数据模型字段">django数据模型字段</h1>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>auto_now_add</td>
+<td>添加对象的时间，更新对象不会变动</td>
+</tr>
+<tr>
+<td>auto_now</td>
+<td>字段保存时会自动保存当前时间</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[linux命令]]></title>
         <id>https://mrpingan.github.io/post/linux-ming-ling</id>
@@ -443,37 +490,14 @@ linux、MacOS、*BSD：/var/lib/rabbitmq/.erlang.cookie</p>
 <h3 id="节点数量">节点数量</h3>
 <p>集群中的数量最好为奇数个：1，3，5等等<br>
 两个节点的集群极不推荐</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Django-rest-framework]]></title>
-        <id>https://mrpingan.github.io/post/django-rest-framework</id>
-        <link href="https://mrpingan.github.io/post/django-rest-framework">
-        </link>
-        <updated>2020-01-08T13:48:44.000Z</updated>
-        <content type="html"><![CDATA[<p>1、浏览器api界面没有Login按钮</p>
-<pre><code class="language-python">urlpatterns = [
-    path('^api-auth/',include('rest_framework.urls',namespace=&quot;rest_framework_auth&quot;))
-]
+<h2 id="集群移除节点">集群移除节点</h2>
+<pre><code># 将待移除节点停止rabbit-server服务
+systemctl stop rabbitmq-server
+
+# 连接到集群使用命令forget_cluster_node移除节点  -n 连接到节点
+rabbitmqctl -n rabbit@aws-va-1a-rabbitmq-prod01 forget_cluster_node rabbit@aws-va-1a-rabbitmq-prod03
+
 </code></pre>
-<p>需要在<code>urls.py</code>中配置这一条路由，就可以看到登录按钮了<br>
-<img src="https://mrpingan.github.io/post-images/1578491545380.png" alt=""></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[好文一览]]></title>
-        <id>https://mrpingan.github.io/post/hao-wen-yi-lan</id>
-        <link href="https://mrpingan.github.io/post/hao-wen-yi-lan">
-        </link>
-        <updated>2019-12-27T14:15:42.000Z</updated>
-        <content type="html"><![CDATA[<p>django源码解读：<br>
-http://www.ziawang.com/article/302/#<br>
-http://www.ziawang.com/blog/django/<br>
-http://www.ziawang.com/article/169/</p>
-<p>erp开源项目：<br>
-https://sourcegraph.com/github.com/zhuinfo/Django-ERP/-/blob/plugin/wfusers.py</p>
-<p>站点：<br>
-http://devopstarter.info/page/9/</p>
 ]]></content>
     </entry>
 </feed>
