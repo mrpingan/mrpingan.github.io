@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-07-01T07:47:24.964Z</updated>
+    <updated>2020-07-01T07:51:32.946Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -27,8 +27,31 @@
 		}
 }
 </code></pre>
-<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。</p>
-]]></content>
+<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。<br>
+input还有其他参数可以选择，比如只能指定的人点击，还可以输入参数。<br>
+另外一个例子：</p>
+<pre><code class="language-groovy">pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            input {
+                message &quot;Should we continue?&quot;
+                ok &quot;Yes, we should.&quot;
+                submitter &quot;admin,anthony&quot;
+                parameters {
+                    string(name: 'PERSON', defaultValue: 'Mr Anthony', description: 'Who should I say hello to?')
+                }
+            }
+            steps {
+                echo &quot;Hello, ${PERSON}, nice to meet you.&quot;
+            }
+        }
+    }
+}
+</code></pre>
+<p>上面代码的意思：运行之前，需要提供input，而且这个input提交，只有admin和anthony这两个用户可以，其他用户提交会失败。把这段代码拷贝到一个pipeline类型的job设置的pipeline tab页面。</p>
+</hr>
+参考文档：https://blog.csdn.net/u011541946/article/details/83589588]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Django]]></title>

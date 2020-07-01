@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1593589638042">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1593589890159">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io">
-        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1593589638042" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1593589890159" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -84,6 +84,16 @@
           <div class="post-info post-detail-info">
             <span><i class="icon-calendar-outline"></i> 2020-07-01</span>
             
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://mrpingan.github.io/tag/hmh1w8HrtU">
+                    jenkins
+                    
+                  </a>
+                
+              </span>
+            
           </div>
           <div class="post-content">
             <p>pipeline中可以进行暂停操作，这在进行高风险操作的时候特别有用。比如，有两台服务器，部署了一台，需要先测试观察日志，就可以在部署这台的stage后加入暂停stage。</p>
@@ -97,8 +107,31 @@
 		}
 }
 </code></pre>
-<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。</p>
-
+<p>当加入这段groovy脚本后，jenkins执行到这儿就会需要用户手动去点击&quot;Yes, we should&quot;。这样，脚本才会继续跑下去。<br>
+input还有其他参数可以选择，比如只能指定的人点击，还可以输入参数。<br>
+另外一个例子：</p>
+<pre><code class="language-groovy">pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            input {
+                message &quot;Should we continue?&quot;
+                ok &quot;Yes, we should.&quot;
+                submitter &quot;admin,anthony&quot;
+                parameters {
+                    string(name: 'PERSON', defaultValue: 'Mr Anthony', description: 'Who should I say hello to?')
+                }
+            }
+            steps {
+                echo &quot;Hello, ${PERSON}, nice to meet you.&quot;
+            }
+        }
+    }
+}
+</code></pre>
+<p>上面代码的意思：运行之前，需要提供input，而且这个input提交，只有admin和anthony这两个用户可以，其他用户提交会失败。把这段代码拷贝到一个pipeline类型的job设置的pipeline tab页面。</p>
+</hr>
+参考文档：https://blog.csdn.net/u011541946/article/details/83589588
           </div>
         </div>
 
