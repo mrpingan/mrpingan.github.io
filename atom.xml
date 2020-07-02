@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-07-01T07:51:32.946Z</updated>
+    <updated>2020-07-02T07:10:01.316Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,16 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[brook科学上网]]></title>
+        <id>https://mrpingan.github.io/post/brook-ke-xue-shang-wang</id>
+        <link href="https://mrpingan.github.io/post/brook-ke-xue-shang-wang">
+        </link>
+        <updated>2020-07-02T07:08:16.000Z</updated>
+        <content type="html"><![CDATA[<p>ss使用很容易被封，可以使用brook。brook使用简单，开源而且支持多个平台<br>
+https://talks.txthinking.com/slides/brook.slide</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[jenkins pipeline暂停]]></title>
         <id>https://mrpingan.github.io/post/jenkins-pipeline-zan-ting</id>
@@ -461,66 +471,6 @@ dpkg -P package_name
 2、接入apollo更安全。配置如果放在服务源码中，如果服务源码泄露，配置也会随着泄露。<br>
 参考文章：http://beckjin.com/2019/07/14/apollo-distributed/<br>
 https://www.infoq.cn/article/ctrip-apollo-configuration-center-architecture</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[rabbitmq集群部分文档]]></title>
-        <id>https://mrpingan.github.io/post/rabbitmq-ji-qun-bu-fen-wen-dang</id>
-        <link href="https://mrpingan.github.io/post/rabbitmq-ji-qun-bu-fen-wen-dang">
-        </link>
-        <updated>2020-02-11T14:52:51.000Z</updated>
-        <content type="html"><![CDATA[<p>一个RabbitMQ集群是一个或者多个rabbitmq单机节点逻辑上的组。每一个成员共享users,virtual hosts,queues,exchanges,bindings,runtime parameters和其他分布式的状态。</p>
-<h1 id="集群发现">集群发现</h1>
-<p>一个RabbitMQ可以通过多种方式构建</p>
-<ul>
-<li>在配置文件中指明节点</li>
-<li>通过基于DNS解析为IP</li>
-<li>使用AWS(EC2) instance discovery（需要通过插件）</li>
-<li>通过基于consul discovery（需要通过插件）</li>
-<li>通过etcd（需要通过插件）</li>
-<li>通过<code>rabbitmqctl</code>手动指定</li>
-</ul>
-<h2 id="节点名">节点名</h2>
-<p>RabbitMQ节点通过节点名来识别。一个rabbitmq节点包括两部分。一个前缀（通常是rabbit）和主机名。比如<code>rabbit@node1.messaging.svc.local</code><br>
-集群中的节点名必须唯一。如果在一个服务器上运行了多了rabbitmq节点，则这些节点必须要使用不同的前缀，比如<code>rabbit1@hostname</code>和<code>rabbit2@hostname</code> 。<br>
-在集群中，节点通过节点名来相互辨别和通信。这意味着每一个节点的hostname都可以正常解析。rabbitmq命令行工具也使用节点名来辨别节点。<br>
-当一个节点启动时，将会检查是否这个节点已经注册，节点名也可以通过<code>RABBITMQ_NODENAME</code>环境变量设置。如果这个变量没有声明，将会使用<code>rabbit@hostname</code>的方式。<br>
-如果系统使用了FQDNs，RabbitMQ节点和命令行工具必须要配置使用长节点名称。可以使用<code>RABBITMQ_USE_LONGNAME</code>环境变量为<code>true</code>,在命令行工具中，除了可以配置<code>RABBITMQ_USE_LONGNAME</code>环境变量或者<code>--longnames</code>参数。</p>
-<h2 id="集群发现前提">集群发现前提</h2>
-<h3 id="主机名可解析">主机名可解析</h3>
-<p>可以在<code>/etc/hosts</code>中配置主机名来解析主机名。有一些场景，修改hosts文件是不被容许的。erlang虚拟机可以配置使用其他的方法来解析主机名，如配置DNS服务器，指定一个本地的文件，一个非标准hosts文件</p>
-<h3 id="端口可达">端口可达</h3>
-<p>RabbitMQ节点绑定到TCP端口来接受客户端和命令行工具的连接。一些进程和工具如<code>selinux</code>可能会阻止RabbitMQ绑定端口。当绑定端口失败时，RabbitMQ节点启动会失败。<br>
-请保证节点之间的下列端口可访问：</p>
-<ul>
-<li>4369 a helper discovery daemon used by RabbitMQ nodes and CLI tools</li>
-<li>5672,5671 AMQP 0-9-1 和1.0 客户端连接端口</li>
-<li>25672 节点之间通信端口</li>
-<li>15672 HTTP API客户端，管理后台启动端口</li>
-<li>61613, 61614  STOMP clients without and with TLS (only if the STOMP plugin is enabled)</li>
-<li>1883, 8883: (MQTT clients without and with TLS, if the MQTT plugin is enabled</li>
-<li>15674: STOMP-over-WebSockets clients (only if the Web STOMP plugin is enabled)</li>
-<li>15675: MQTT-over-WebSockets clients (only if the Web MQTT plugin is enabled)</li>
-<li>15692: Prometheus metrics (only if the Prometheus plugin is enabled)</li>
-</ul>
-<h2 id="集群节点">集群节点</h2>
-<p>一些分布式系统有leader和follower节点角色，在RabbitMQ中没有这些角色。所有的节点都是一样的，没有特别的节点。<br>
-命令行工具或者HTTP API访问任何一个节点得到的数据都是一致的。<br>
-RabbitMQ节点和命令行工具（如rabbitmqctl）使用一个cookie来决定是否他们可以相互通信。两个节点只有cookie一致才能正常通信。cookie是一段随机字母数字字符串，存储在本地文件。这个文件的权限也要控制，如设置为400或者600。<br>
-如果这个文件不存在，Erlang虚拟机将会在rabbitmq启动的时候创建一个。<br>
-cookie文件路径<br>
-linux、MacOS、*BSD：/var/lib/rabbitmq/.erlang.cookie</p>
-<h3 id="节点数量">节点数量</h3>
-<p>集群中的数量最好为奇数个：1，3，5等等<br>
-两个节点的集群极不推荐</p>
-<h2 id="集群移除节点">集群移除节点</h2>
-<pre><code># 将待移除节点停止rabbit-server服务
-systemctl stop rabbitmq-server
-
-# 连接到集群使用命令forget_cluster_node移除节点  -n 连接到节点
-rabbitmqctl -n rabbit@aws-va-1a-rabbitmq-prod01 forget_cluster_node rabbit@aws-va-1a-rabbitmq-prod03
-
-</code></pre>
 ]]></content>
     </entry>
 </feed>
