@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1593673797750">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1597157554987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io">
-        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1593673797750" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1597157554987" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -95,22 +95,22 @@
 <ul>
 <li>调整用户目录顺序,并禁用LDAP用户目录</li>
 </ul>
-<p><img src="https://mrpingan.github.io/post-images/1568116514235.png" alt=""><br>
+<p><img src="https://mrpingan.github.io/post-images/1568116514235.png" alt="" loading="lazy"><br>
 此时，confluence读取的用户数据都是本地目录数据，查看文档<br>
-<img src="https://mrpingan.github.io/post-images/1568116630879.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568116630879.png" alt="" loading="lazy"><br>
 post的发布者还是老账号</p>
 <ul>
 <li>修改老账号的用户名为ping，并启动LDAP用户目录，调整用户目录顺序</li>
 </ul>
-<p><img src="https://mrpingan.github.io/post-images/1568116799748.png" alt=""><br>
+<p><img src="https://mrpingan.github.io/post-images/1568116799748.png" alt="" loading="lazy"><br>
 此时，查看文档<br>
-<img src="https://mrpingan.github.io/post-images/1568116820884.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568116820884.png" alt="" loading="lazy"><br>
 post的发布者变成了新账号中的可见名<br>
 查看用户列表<br>
-<img src="https://mrpingan.github.io/post-images/1568116892133.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568116892133.png" alt="" loading="lazy"><br>
 只有两个账号，老账号改了名字后，由于登录的时候，LDAP目录排在第一个，wiki先在LDAP中找到<code>ping</code>这个用户，于是认证成功可以登录。<br>
 查看所属组<br>
-<img src="https://mrpingan.github.io/post-images/1568117006765.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568117006765.png" alt="" loading="lazy"><br>
 发现直接继承了老账号<code>ping</code>的所属组。这是因为，在LDAP配置中，我们没有使用LDAP里面的目录结构。组都在wiki中授权，而且，wiki把用户名当唯一标识符，所以任务两个账号是同一个账号。<br>
 目前测试，这种方案可行。</p>
 <h1 id="方案二">方案二</h1>
@@ -121,7 +121,7 @@ post的发布者变成了新账号中的可见名<br>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps">
+            <a class="purple-link" href="https://mrpingan.github.io/post/confluence-lian-jie-ldaps/">
               <h3 class="post-title">
                 下一篇：confluence连接ldaps
               </h3>

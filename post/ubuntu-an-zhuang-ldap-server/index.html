@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1593673797750">
+<link rel="shortcut icon" href="https://mrpingan.github.io/favicon.ico?v=1597157554987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io">
-        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1593673797750" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io/images/avatar.png?v=1597157554987" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -87,7 +87,7 @@
               <span>
                 <i class="icon-pricetags-outline"></i>
                 
-                  <a href="https://mrpingan.github.io/tag/v9WOQbZWI6">
+                  <a href="https://mrpingan.github.io/tag/v9WOQbZWI6/">
                     ldap
                     
                   </a>
@@ -118,20 +118,20 @@
 <pre><code>apt install slapd ldap-utils
 </code></pre>
 <p>安装后会自动跳出页面要求输入<code>admin</code>密码，这儿先输入<code>admin</code>，之后还要配置<br>
-<img src="https://mrpingan.github.io/post-images/1568013256394.png" alt=""></p>
+<img src="https://mrpingan.github.io/post-images/1568013256394.png" alt="" loading="lazy"></p>
 <h2 id="重新配置ldap">重新配置ldap</h2>
 <pre><code>dpkg-reconfigure slapd
 </code></pre>
-<p><img src="https://mrpingan.github.io/post-images/1568015363684.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015397143.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015515557.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015527344.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015543529.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015563599.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015591682.png" alt=""><br>
-<img src="https://mrpingan.github.io/post-images/1568015622116.png" alt=""><br>
+<p><img src="https://mrpingan.github.io/post-images/1568015363684.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015397143.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015515557.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015527344.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015543529.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015563599.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015591682.png" alt="" loading="lazy"><br>
+<img src="https://mrpingan.github.io/post-images/1568015622116.png" alt="" loading="lazy"><br>
 配置后之后就会启动，使用<code>Jxplorer</code>查看DIT<br>
-<img src="https://mrpingan.github.io/post-images/1568019006265.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568019006265.png" alt="" loading="lazy"><br>
 在ubuntu系统的包中，一些常用的schema都已经有了，比如，cosine, nis, inetorgperson。core schema也是有的。</p>
 <h2 id="ldap结构">ldap结构</h2>
 <pre><code>root@client:/etc/ldap/slapd.d/cn=config# tree
@@ -298,11 +298,11 @@ Sep  9 15:15:43 client slapd[9120]: conn=1004 fd=15 TLS established tls_ssf=256 
 <pre><code>Root exception is javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: Invalid Server Certificate: server certificate could not be verified, and the CA certificate is missing from the certificate chain. raw error: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested targe
 </code></pre>
 <p>添加CA证书<br>
-<img src="https://mrpingan.github.io/post-images/1568042860520.png" alt=""><br>
+<img src="https://mrpingan.github.io/post-images/1568042860520.png" alt="" loading="lazy"><br>
 选择CA证书即可，这个颁发的免费证书的CA证书和公钥写在一个文件中，直接导入即可。<br>
 然后再通过636端口连接，Bravo，连接成功。<br>
 查看ldap日志：<br>
-<img src="https://mrpingan.github.io/post-images/1568042981701.png" alt=""></p>
+<img src="https://mrpingan.github.io/post-images/1568042981701.png" alt="" loading="lazy"></p>
 
           </div>
         </div>

@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>devops | Ping&#39;s Home</title>
+<title>ubuntu导入CA证书 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -78,48 +78,39 @@
 
 
       <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">ubuntu导入CA证书</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-08-11</span>
+            
+          </div>
+          <div class="post-content">
+            <h2 id="导入证书">导入证书</h2>
+<pre><code class="language-bash">cp 证书路径.crt /usr/local/share/ca-certificates
+update-ca-certificates
+</code></pre>
+<p><strong>update-ca-certificates命令将PEM格式的根证书内容附加到/etc/ssl/certs/ca-certificates.crt ，而/etc/ssl/certs/ca-certificates.crt 包含了系统自带的各种可信根证书</strong></p>
+<h2 id="删除证书">删除证书</h2>
+<pre><code class="language-bash">rm -f /usr/local/share/ca-certificates/证书名称.crt
+update-ca-certificates
+</code></pre>
 
-        <div class="current-tag-container">
-          <h2 class="title">
-            <i class="icon icon-pricetags-outline"></i> devops
-          </h2> 
+          </div>
         </div>
 
         
-<section class="post-item">
-    <div class="content">
-      <a href="https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
-        <h2 class="post-title">自动化运维工具比较</h2>
-      </a>
-      <div class="post-abstract">
-        
+          <div class="next-post">
+            <a class="purple-link" href="https://mrpingan.github.io/post/brook-ke-xue-shang-wang/">
+              <h3 class="post-title">
+                下一篇：brook科学上网
+              </h3>
+            </a>
+          </div>
+          
       </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2020-03-24</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://mrpingan.github.io/tag/dvprD3Bi2/">
-                devops
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
 
-
-<div class="pagination-container">
-  
-  
-</div>
-
-
-      </div>
+      
 
       <div class="site-footer">
   <div class="slogan">温故而知新</div>
