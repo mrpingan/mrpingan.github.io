@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://mrpingan.github.io</id>
+    <id>https://uxt2ec.coding-pages.com/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-08-12T01:56:51.392Z</updated>
+    <updated>2020-08-12T02:51:17.997Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://mrpingan.github.io"/>
-    <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
+    <link rel="alternate" href="https://uxt2ec.coding-pages.com/"/>
+    <link rel="self" href="https://uxt2ec.coding-pages.com/atom.xml"/>
     <subtitle>温故而知新</subtitle>
-    <logo>https://mrpingan.github.io/images/avatar.png</logo>
-    <icon>https://mrpingan.github.io/favicon.ico</icon>
+    <logo>https://uxt2ec.coding-pages.com/images/avatar.png</logo>
+    <icon>https://uxt2ec.coding-pages.com/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
     <entry>
         <title type="html"><![CDATA[ubuntu导入CA证书]]></title>
-        <id>https://mrpingan.github.io/post/ubuntu-dao-ru-ca-zheng-shu/</id>
-        <link href="https://mrpingan.github.io/post/ubuntu-dao-ru-ca-zheng-shu/">
+        <id>https://uxt2ec.coding-pages.com/post/ubuntu-dao-ru-ca-zheng-shu/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/ubuntu-dao-ru-ca-zheng-shu/">
         </link>
         <updated>2020-08-11T14:49:29.000Z</updated>
         <content type="html"><![CDATA[<h2 id="导入证书">导入证书</h2>
@@ -29,8 +29,8 @@ update-ca-certificates
     </entry>
     <entry>
         <title type="html"><![CDATA[brook科学上网]]></title>
-        <id>https://mrpingan.github.io/post/brook-ke-xue-shang-wang/</id>
-        <link href="https://mrpingan.github.io/post/brook-ke-xue-shang-wang/">
+        <id>https://uxt2ec.coding-pages.com/post/brook-ke-xue-shang-wang/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/brook-ke-xue-shang-wang/">
         </link>
         <updated>2020-07-02T07:08:16.000Z</updated>
         <content type="html"><![CDATA[<p>ss使用很容易被封，可以使用brook。brook使用简单，开源而且支持多个平台<br>
@@ -39,8 +39,8 @@ https://talks.txthinking.com/slides/brook.slide</p>
     </entry>
     <entry>
         <title type="html"><![CDATA[jenkins pipeline暂停]]></title>
-        <id>https://mrpingan.github.io/post/jenkins-pipeline-zan-ting/</id>
-        <link href="https://mrpingan.github.io/post/jenkins-pipeline-zan-ting/">
+        <id>https://uxt2ec.coding-pages.com/post/jenkins-pipeline-zan-ting/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/jenkins-pipeline-zan-ting/">
         </link>
         <updated>2020-07-01T07:43:34.000Z</updated>
         <content type="html"><![CDATA[<p>pipeline中可以进行暂停操作，这在进行高风险操作的时候特别有用。比如，有两台服务器，部署了一台，需要先测试观察日志，就可以在部署这台的stage后加入暂停stage。</p>
@@ -82,8 +82,8 @@ input还有其他参数可以选择，比如只能指定的人点击，还可以
     </entry>
     <entry>
         <title type="html"><![CDATA[Django]]></title>
-        <id>https://mrpingan.github.io/post/django/</id>
-        <link href="https://mrpingan.github.io/post/django/">
+        <id>https://uxt2ec.coding-pages.com/post/django/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/django/">
         </link>
         <updated>2020-04-20T16:22:22.000Z</updated>
         <content type="html"><![CDATA[<h1 id="django数据模型字段">django数据模型字段</h1>
@@ -109,8 +109,8 @@ input还有其他参数可以选择，比如只能指定的人点击，还可以
     </entry>
     <entry>
         <title type="html"><![CDATA[linux命令]]></title>
-        <id>https://mrpingan.github.io/post/linux-ming-ling/</id>
-        <link href="https://mrpingan.github.io/post/linux-ming-ling/">
+        <id>https://uxt2ec.coding-pages.com/post/linux-ming-ling/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/linux-ming-ling/">
         </link>
         <updated>2020-03-26T14:50:53.000Z</updated>
         <content type="html"><![CDATA[<h1 id="io重定向">I/O重定向</h1>
@@ -327,8 +327,8 @@ find . -type f -mtime +5 -ok rm { } \;
     </entry>
     <entry>
         <title type="html"><![CDATA[ansible执行速度优化]]></title>
-        <id>https://mrpingan.github.io/post/ansible-zhi-xing-su-du-you-hua/</id>
-        <link href="https://mrpingan.github.io/post/ansible-zhi-xing-su-du-you-hua/">
+        <id>https://uxt2ec.coding-pages.com/post/ansible-zhi-xing-su-du-you-hua/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/ansible-zhi-xing-su-du-you-hua/">
         </link>
         <updated>2020-03-24T16:17:10.000Z</updated>
         <content type="html"><![CDATA[<p>ansible没有agent，采用ssh来通讯，在机器数量达到一个量级的时候，执行流程会变得很慢。这儿提供一些优化思路</p>
@@ -364,8 +364,8 @@ accelerate_connect_timeout = 5.0
     </entry>
     <entry>
         <title type="html"><![CDATA[自动化运维工具比较]]></title>
-        <id>https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/</id>
-        <link href="https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
+        <id>https://uxt2ec.coding-pages.com/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
         </link>
         <updated>2020-03-24T15:40:46.000Z</updated>
         <content type="html"><![CDATA[<table>
@@ -426,8 +426,8 @@ accelerate_connect_timeout = 5.0
     </entry>
     <entry>
         <title type="html"><![CDATA[nginx防止爬虫爬页面]]></title>
-        <id>https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian/</id>
-        <link href="https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian/">
+        <id>https://uxt2ec.coding-pages.com/post/nginx-fang-zhi-pa-chong-pa-ye-mian/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/nginx-fang-zhi-pa-chong-pa-ye-mian/">
         </link>
         <updated>2020-03-24T15:33:27.000Z</updated>
         <content type="html"><![CDATA[<h1 id="方法一">方法一</h1>
@@ -451,8 +451,8 @@ robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。r
     </entry>
     <entry>
         <title type="html"><![CDATA[iptables查看数据包传输过程]]></title>
-        <id>https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng/</id>
-        <link href="https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng/">
+        <id>https://uxt2ec.coding-pages.com/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng/">
         </link>
         <updated>2020-03-22T02:11:02.000Z</updated>
         <content type="html"><![CDATA[<p>docker容器和宿主机在通过docker0网桥通信时，linux内核netfilter也参与其中，如果使用的iptables，可通过开启iptables的TRACE功能，查看数据包的传输过程。</p>
@@ -465,8 +465,8 @@ iptables -t raw -A PREROUTING -p icmp -j TRACE
     </entry>
     <entry>
         <title type="html"><![CDATA[ubuntu 安装es]]></title>
-        <id>https://mrpingan.github.io/post/ubuntu-an-zhuang-es/</id>
-        <link href="https://mrpingan.github.io/post/ubuntu-an-zhuang-es/">
+        <id>https://uxt2ec.coding-pages.com/post/ubuntu-an-zhuang-es/</id>
+        <link href="https://uxt2ec.coding-pages.com/post/ubuntu-an-zhuang-es/">
         </link>
         <updated>2020-03-10T03:47:08.000Z</updated>
         <content type="html"><![CDATA[<p>使用dpkg安装es的时候，发现<code>/etc/elasticserach</code>目录下一直没有配置文件。重新安装也是这样。</p>
