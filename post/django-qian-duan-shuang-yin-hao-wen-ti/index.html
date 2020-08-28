@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>devops | Ping&#39;s Home</title>
+<title>django前端双引号问题 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -78,48 +78,65 @@
 
 
       <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">django前端双引号问题</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-08-28</span>
+            
+          </div>
+          <div class="post-content">
+            <p>django 前端的特殊符合，比如双引号。通过ajax传到后端会被转义为<code>&amp;quot;</code>，所以需要在前端进行处理</p>
+<ul>
+<li><code>&lt;</code> 会被转义为<code>&amp;lt</code></li>
+<li><code>&gt;</code> 会被转义为<code>&amp;gt</code></li>
+<li><code>'</code> 会被转义为 <code>&amp;#x27;</code></li>
+<li><code>&quot;</code> 会被转义为 <code>&amp;quot;</code></li>
+<li><code>&amp;</code> 会被转义为 <code>&amp;amp;</code></li>
+</ul>
+<pre><code># 如果在前端的字符是通过django 模板渲染的，可以使用模板过滤器
+# 比如前端的sql语句
+var sql_content = &quot;{{ sql_content | safe }}&quot;
 
-        <div class="current-tag-container">
-          <h2 class="title">
-            <i class="icon icon-pricetags-outline"></i> devops
-          </h2> 
+# 这样传到后端双引号就不会被转义为 &amp;quot;
+
+</code></pre>
+<h1 id="safe模板过滤器">safe模板过滤器</h1>
+<p>django模板引擎会自动将变量转义，所以如果你不想变量被转义。可以使用<code>safe</code>模板过滤器，这样使用</p>
+<pre><code>{{ title | safe }}
+</code></pre>
+<p>但是，这样可能会存在html注入的安全风险，因为<code>safe</code>过滤器表示这个变量是可信任的，是安全的。</p>
+<h1 id="autoescape模板标签">autoescape模板标签</h1>
+<p>也可以使用<code>autoescape</code>模板标签来禁止转义，这样使用</p>
+<pre><code class="language-jinjia2">{% autoescape off %}
+    {{ title }}
+{% endautoescape %}
+</code></pre>
+<p>默认为<strong>on</strong>，使用<strong>off</strong>可以将标签内的变量关闭自动转义</p>
+<h1 id="escapejs模板过滤器">escapejs模板过滤器</h1>
+<p>在javascripts里面，有时候需要对字符进行转义，避免出现语法错误。<br>
+比如：有变量<code>val='select &quot;aaa&quot; in tables'</code><br>
+在scripts标签中使用，我们会这样解析出来。</p>
+<pre><code>var a = &quot;{{ val }}&quot;
+</code></pre>
+<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成**&quot;select &quot;aaa&quot; in tables&quot;**<br>
+这个时候，使用<code>{{ val | escapejs }}</code>就可以正常避免这样的问题。</p>
+
+          </div>
         </div>
 
         
-<section class="post-item">
-    <div class="content">
-      <a href="https://uxt2ec.coding-pages.com/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
-        <h2 class="post-title">自动化运维工具比较</h2>
-      </a>
-      <div class="post-abstract">
-        
+          <div class="next-post">
+            <a class="purple-link" href="https://uxt2ec.coding-pages.com/post/python-huo-de-lian-xu-de-shi-jian-xu-lie/">
+              <h3 class="post-title">
+                下一篇：python获得连续的时间序列
+              </h3>
+            </a>
+          </div>
+          
       </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2020-03-24</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://uxt2ec.coding-pages.com/tag/dvprD3Bi2/">
-                devops
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
 
-
-<div class="pagination-container">
-  
-  
-</div>
-
-
-      </div>
+      
 
       <div class="site-footer">
   <div class="slogan">温故而知新</div>

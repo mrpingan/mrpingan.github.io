@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>devops | Ping&#39;s Home</title>
+<title>python获得连续的时间序列 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -78,48 +78,50 @@
 
 
       <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">python获得连续的时间序列</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-08-26</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://uxt2ec.coding-pages.com/tag/NxGGIBe5A/">
+                    python
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content">
+            <p>使用<code>dateutil</code>库可以很pythonic的获得连续的时间序列。</p>
+<pre><code class="language-python">from dateutil import rrule, parser
+date1 = '2011-05-03'
+date2 = '2011-05-10'
+dates = list(rrule.rrule(rrule.DAILY,
+                         dtstart=parser.parse(date1),
+                         until=parser.parse(date2)))
 
-        <div class="current-tag-container">
-          <h2 class="title">
-            <i class="icon icon-pricetags-outline"></i> devops
-          </h2> 
+print(dates)
+</code></pre>
+
+          </div>
         </div>
 
         
-<section class="post-item">
-    <div class="content">
-      <a href="https://uxt2ec.coding-pages.com/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
-        <h2 class="post-title">自动化运维工具比较</h2>
-      </a>
-      <div class="post-abstract">
-        
+          <div class="next-post">
+            <a class="purple-link" href="https://uxt2ec.coding-pages.com/post/ubuntu-dao-ru-ca-zheng-shu/">
+              <h3 class="post-title">
+                下一篇：ubuntu导入CA证书
+              </h3>
+            </a>
+          </div>
+          
       </div>
-      <div class="post-info">
-        <span><i class="icon icon-calendar-outline"></i> 2020-03-24</span>
-        
-          <span>
-            <i class="icon icon-pricetags-outline"></i>
-            
-              <a href="https://uxt2ec.coding-pages.com/tag/dvprD3Bi2/">
-                devops
-                
-              </a>
-            
-          </span>
-        
-      </div>
-    </div>
-    
-  </section>
 
-
-<div class="pagination-container">
-  
-  
-</div>
-
-
-      </div>
+      
 
       <div class="site-footer">
   <div class="slogan">温故而知新</div>
