@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://mrpingan.github.io//favicon.ico?v=1598605780265">
+<link rel="shortcut icon" href="https://mrpingan.github.io//favicon.ico?v=1598606239450">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://mrpingan.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="site-header">
     <div class="left">
       <a href="https://mrpingan.github.io/">
-        <img class="avatar" src="https://mrpingan.github.io//images/avatar.png?v=1598605780265" alt="" width="32px" height="32px">
+        <img class="avatar" src="https://mrpingan.github.io//images/avatar.png?v=1598606239450" alt="" width="32px" height="32px">
       </a>
       <a href="https://mrpingan.github.io/">
         <h1 class="site-title">Ping&#39;s Home</h1>
@@ -113,7 +113,7 @@ var sql_content = &quot;{{ sql_content | safe }}&quot;
 </code></pre>
 <h1 id="safe模板过滤器">safe模板过滤器</h1>
 <p>django模板引擎会自动将变量转义，所以如果你不想变量被转义。可以使用<code>safe</code>模板过滤器，这样使用</p>
-<pre><code>{{ title | safe }}
+<pre><code class="language-jinja2">{{ title | safe }}
 </code></pre>
 <p>但是，这样可能会存在html注入的安全风险，因为<code>safe</code>过滤器表示这个变量是可信任的，是安全的。</p>
 <h1 id="autoescape模板标签">autoescape模板标签</h1>
@@ -127,9 +127,9 @@ var sql_content = &quot;{{ sql_content | safe }}&quot;
 <p>在javascripts里面，有时候需要对字符进行转义，避免出现语法错误。<br>
 比如：有变量<code>val='select &quot;aaa&quot; in tables'</code><br>
 在scripts标签中使用，我们会这样解析出来。</p>
-<pre><code>var a = &quot;{{ val }}&quot;
+<pre><code class="language-js">var a = &quot;{{ val }}&quot;
 </code></pre>
-<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成**&quot;select &quot;aaa&quot; in tables&quot;**<br>
+<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成<code>&quot;select &quot;aaa&quot; in tables&quot;</code><br>
 这个时候，使用<code>{{ val | escapejs }}</code>就可以正常避免这样的问题。</p>
 
           </div>

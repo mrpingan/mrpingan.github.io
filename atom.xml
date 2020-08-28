@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-08-28T09:09:43.887Z</updated>
+    <updated>2020-08-28T09:17:22.956Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -33,7 +33,7 @@ var sql_content = &quot;{{ sql_content | safe }}&quot;
 </code></pre>
 <h1 id="safe模板过滤器">safe模板过滤器</h1>
 <p>django模板引擎会自动将变量转义，所以如果你不想变量被转义。可以使用<code>safe</code>模板过滤器，这样使用</p>
-<pre><code>{{ title | safe }}
+<pre><code class="language-jinja2">{{ title | safe }}
 </code></pre>
 <p>但是，这样可能会存在html注入的安全风险，因为<code>safe</code>过滤器表示这个变量是可信任的，是安全的。</p>
 <h1 id="autoescape模板标签">autoescape模板标签</h1>
@@ -47,9 +47,9 @@ var sql_content = &quot;{{ sql_content | safe }}&quot;
 <p>在javascripts里面，有时候需要对字符进行转义，避免出现语法错误。<br>
 比如：有变量<code>val='select &quot;aaa&quot; in tables'</code><br>
 在scripts标签中使用，我们会这样解析出来。</p>
-<pre><code>var a = &quot;{{ val }}&quot;
+<pre><code class="language-js">var a = &quot;{{ val }}&quot;
 </code></pre>
-<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成**&quot;select &quot;aaa&quot; in tables&quot;**<br>
+<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成<code>&quot;select &quot;aaa&quot; in tables&quot;</code><br>
 这个时候，使用<code>{{ val | escapejs }}</code>就可以正常避免这样的问题。</p>
 ]]></content>
     </entry>
