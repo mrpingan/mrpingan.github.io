@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>nginx防止爬虫爬页面 | Ping&#39;s Home</title>
+<title>vue项目组axios.all is not funciton问题 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,48 +80,56 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">nginx防止爬虫爬页面</h2>
+          <h2 class="post-title">vue项目组axios.all is not funciton问题</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2020-03-24</span>
-            
-              <span>
-                <i class="icon-pricetags-outline"></i>
-                
-                  <a href="https://mrpingan.github.io/tag/YSOhyUHxZ/">
-                    nginx
-                    
-                  </a>
-                
-              </span>
+            <span><i class="icon-calendar-outline"></i> 2020-10-20</span>
             
           </div>
           <div class="post-content">
-            <h1 id="方法一">方法一</h1>
-<p>修改nginx，匹配到爬虫的ua，直接返回403</p>
-<pre><code class="language-nginx">server { 
-	listen 80; 
-	server_name 127.0.0.1; 
-	#添加如下内容即可防止爬虫
-	if ($http_user_agent ~* &quot;qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot&quot;) 
-	{
-	return 403; 
-	}
-} 
+            <p>我们的项目在很多时候，不想使用<code>axios</code>默认的配置，都需要使用自定义设置的<code>axios</code>实例。比如：</p>
+<pre><code class="language-vue">import axios from 'axios'
+
+// create an axios instance
+const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 50000 // request timeout
+})
+export default service
 </code></pre>
-<h1 id="方法二">方法二</h1>
-<p>网站下增加<strong>Robots.txt</strong>，放在站点根目录<br>
-在http://tool.chinaz.com/robots/站点可以针对现在的搜索引擎按照想要的规则生成robots.txt文件。<br>
-robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。robots.txt文件告诉蜘蛛程序在服务器上什么文件是可以被查看的。<br>
-当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。百度官方建议，仅当您的网站包含不希望被搜索引擎收录的内容时，才需要使用robots.txt文件。如果您希望搜索引擎收录网站上所有内容，请勿建立robots.txt文件。</p>
+<p>设置完后，使用<code>get</code>、<code>post</code>、<code>put</code>等基础的http方法是没有问题的。但是如果使用<code>all</code>、<code>spread</code>、<code>Cancel</code>、<code>CancelToken</code>、<code>isCancel</code>方法，console将会报错</p>
+<pre><code>axios.all is not a function
+</code></pre>
+<h1 id="解决方案">解决方案</h1>
+<p>只需要在封装的<code>axios</code>文件中加入</p>
+<pre><code class="language-vue">service.all = axios.all
+service.spread = axios.spread
+</code></pre>
+<p>因此，上面的文件变成这样</p>
+<pre><code class="language-vue">import axios from 'axios'
+
+// create an axios instance
+const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 50000 // request timeout
+})
+
+service.all = axios.all
+service.spread = axios.spread
+
+export default service
+</code></pre>
+<p>这样，再去调用<code>all</code>、<code>spread</code>方法就不会报错了，其他的方法也是同样道理。</p>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://mrpingan.github.io/post/iptables-cha-kan-shu-ju-bao-chuan-shu-guo-cheng/">
+            <a class="purple-link" href="https://mrpingan.github.io/post/django-requestpost-yu-requestbody/">
               <h3 class="post-title">
-                下一篇：iptables查看数据包传输过程
+                下一篇：Django request.POST与request.body
               </h3>
             </a>
           </div>

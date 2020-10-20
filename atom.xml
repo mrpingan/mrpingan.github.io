@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-08-31T09:39:53.487Z</updated>
+    <updated>2020-10-20T06:34:48.755Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,58 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[vue项目组axios.all is not funciton问题]]></title>
+        <id>https://mrpingan.github.io/post/vue-xiang-mu-zu-axiosall-is-not-funciton-wen-ti/</id>
+        <link href="https://mrpingan.github.io/post/vue-xiang-mu-zu-axiosall-is-not-funciton-wen-ti/">
+        </link>
+        <updated>2020-10-20T06:25:03.000Z</updated>
+        <content type="html"><![CDATA[<p>我们的项目在很多时候，不想使用<code>axios</code>默认的配置，都需要使用自定义设置的<code>axios</code>实例。比如：</p>
+<pre><code class="language-vue">import axios from 'axios'
+
+// create an axios instance
+const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 50000 // request timeout
+})
+export default service
+</code></pre>
+<p>设置完后，使用<code>get</code>、<code>post</code>、<code>put</code>等基础的http方法是没有问题的。但是如果使用<code>all</code>、<code>spread</code>、<code>Cancel</code>、<code>CancelToken</code>、<code>isCancel</code>方法，console将会报错</p>
+<pre><code>axios.all is not a function
+</code></pre>
+<h1 id="解决方案">解决方案</h1>
+<p>只需要在封装的<code>axios</code>文件中加入</p>
+<pre><code class="language-vue">service.all = axios.all
+service.spread = axios.spread
+</code></pre>
+<p>因此，上面的文件变成这样</p>
+<pre><code class="language-vue">import axios from 'axios'
+
+// create an axios instance
+const service = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 50000 // request timeout
+})
+
+service.all = axios.all
+service.spread = axios.spread
+
+export default service
+</code></pre>
+<p>这样，再去调用<code>all</code>、<code>spread</code>方法就不会报错了，其他的方法也是同样道理。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django request.POST与request.body]]></title>
+        <id>https://mrpingan.github.io/post/django-requestpost-yu-requestbody/</id>
+        <link href="https://mrpingan.github.io/post/django-requestpost-yu-requestbody/">
+        </link>
+        <updated>2020-09-23T03:05:28.000Z</updated>
+        <content type="html"><![CDATA[<p>django中的request.POST只能取到Content-Type（请求头）为<code>application/x-www-form-urlencoded</code>(form表单默认格式)的数据，如果请求头为<code>application/json</code>，request.POST中的数据为空，只能在request.body中能取到原生的数据。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[django前端双引号问题]]></title>
         <id>https://mrpingan.github.io/post/django-qian-duan-shuang-yin-hao-wen-ti/</id>
@@ -421,93 +473,6 @@ accelerate_port = 5099
 accelerate_timeout = 30
 accelerate_connect_timeout = 5.0
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[自动化运维工具比较]]></title>
-        <id>https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/</id>
-        <link href="https://mrpingan.github.io/post/zi-dong-hua-yun-wei-gong-ju-bi-jiao/">
-        </link>
-        <updated>2020-03-24T15:40:46.000Z</updated>
-        <content type="html"><![CDATA[<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>puppt</th>
-<th>saltstack</th>
-<th>ansible</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>开发语言</td>
-<td>Ruby</td>
-<td>Python</td>
-<td>Python</td>
-</tr>
-<tr>
-<td>客户端</td>
-<td>有</td>
-<td>有</td>
-<td>无</td>
-</tr>
-<tr>
-<td>二次开发</td>
-<td>不支持</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>通信加密</td>
-<td>标准ssl协议</td>
-<td>AES加密</td>
-<td>OpenSSH</td>
-</tr>
-<tr>
-<td>配置文件格式</td>
-<td>Ruby语法</td>
-<td>yaml</td>
-<td>yaml</td>
-</tr>
-<tr>
-<td>webUI</td>
-<td>提供</td>
-<td>提供</td>
-<td>提供（商业版）</td>
-</tr>
-</tbody>
-</table>
-<p>ansible缺点：</p>
-<ul>
-<li>对管理节点为windows有待加强</li>
-<li>需导入资源清单</li>
-<li>执行效率地（可能是ssh服务慢，可以通过优化ssh连接速度和使用ansible加速模块提高效率）</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[nginx防止爬虫爬页面]]></title>
-        <id>https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian/</id>
-        <link href="https://mrpingan.github.io/post/nginx-fang-zhi-pa-chong-pa-ye-mian/">
-        </link>
-        <updated>2020-03-24T15:33:27.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="方法一">方法一</h1>
-<p>修改nginx，匹配到爬虫的ua，直接返回403</p>
-<pre><code class="language-nginx">server { 
-	listen 80; 
-	server_name 127.0.0.1; 
-	#添加如下内容即可防止爬虫
-	if ($http_user_agent ~* &quot;qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot&quot;) 
-	{
-	return 403; 
-	}
-} 
-</code></pre>
-<h1 id="方法二">方法二</h1>
-<p>网站下增加<strong>Robots.txt</strong>，放在站点根目录<br>
-在http://tool.chinaz.com/robots/站点可以针对现在的搜索引擎按照想要的规则生成robots.txt文件。<br>
-robots.txt是搜索引擎中访问网站的时候要查看的第一个文件。robots.txt文件告诉蜘蛛程序在服务器上什么文件是可以被查看的。<br>
-当一个搜索蜘蛛访问一个站点时，它会首先检查该站点根目录下是否存在robots.txt，如果存在，搜索机器人就会按照该文件中的内容来确定访问的范围；如果该文件不存在，所有的搜索蜘蛛将能够访问网站上所有没有被口令保护的页面。百度官方建议，仅当您的网站包含不希望被搜索引擎收录的内容时，才需要使用robots.txt文件。如果您希望搜索引擎收录网站上所有内容，请勿建立robots.txt文件。</p>
 ]]></content>
     </entry>
 </feed>
