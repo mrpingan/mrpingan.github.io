@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-11-26T07:54:27.221Z</updated>
+    <updated>2020-12-07T12:52:20.936Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,107 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[使用setTimeout取代setInterval]]></title>
+        <id>https://mrpingan.github.io/post/shi-yong-settimeout-qu-dai-setinterval/</id>
+        <link href="https://mrpingan.github.io/post/shi-yong-settimeout-qu-dai-setinterval/">
+        </link>
+        <updated>2020-12-07T12:43:10.000Z</updated>
+        <content type="html"><![CDATA[<p>使用setInterval在轮询方面有一个弊端，代码如下<br>
+handleShowLog定时3s查询后端日志，当getDeployLog这个接口函数能在3s内正常返回数据时，ajax事件不会堆积，但是如果在3s内不能正常返回，就会不断的生成获取日志的请求，极大的消耗服务器资源。</p>
+<pre><code class="language-javascript">handleShowLog() {
+    //注意这个this
+      let _this = this
+      this.showDeployLog = true
+      const params = {
+        'node_key': _this.node_key,
+        'jenkins_build_num': _this.jenkins_build_num,
+        'jenkins_build_name': _this.jenkins_build_name
+      }
+      if(_this.timer != null) {
+        return
+      }
+      this.timer = setInterval(function f() {
+        getDeployLog(params)
+          .then((res) =&gt; {
+            _this.log = res.res
+            if(!res.moreData) {
+              _this.isLoading = false
+              console.log(_this.log)
+              clearInterval(this.timer)
+              // setInterval(_this.time)
+            }
+          })
+          .catch(err =&gt; {
+            _this.$message.error('日志获取失败: ' + err)
+          })
+      }, 0)
+    }
+</code></pre>
+<p>#使用setTimeout优化</p>
+<pre><code class="language-javascript">handleShowLog() {
+      //注意这儿的this
+      let _this = this
+      this.showDeployLog = true
+      const params = {
+        'node_key': _this.node_key,
+        'jenkins_build_num': _this.jenkins_build_num,
+        'jenkins_build_name': _this.jenkins_build_name
+      }
+      if(_this.timer != null) {
+        return
+      }
+      this.timer = setInterval(function f() {
+        getDeployLog(params)
+          .then((res) =&gt; {
+            _this.log = res.res
+            if(!res.moreData) {
+              _this.isLoading = false
+              console.log(_this.log)
+              // clearInterval(this.timer)
+              clearTimeout(_this.time)
+            } else {
+              setTimeout(f, 3000)
+            }
+          })
+          .catch(err =&gt; {
+            _this.$message.error('日志获取失败: ' + err)
+          })
+      }, 0)
+    }
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[git 拉取代码失败]]></title>
+        <id>https://mrpingan.github.io/post/git-la-qu-dai-ma-shi-bai/</id>
+        <link href="https://mrpingan.github.io/post/git-la-qu-dai-ma-shi-bai/">
+        </link>
+        <updated>2020-12-03T11:50:34.000Z</updated>
+        <content type="html"><![CDATA[<p>#错误</p>
+<pre><code class="language-bash">19:18:06 From code.dding.net:server/lease-platform/pms-api
+19:18:06    df96594..b8ce1ea  dev_zhangdan2_fanghao -&gt; origin/dev_zhangdan2_fanghao
+19:18:06    d7fd965..479ad2a  develop    -&gt; origin/develop
+19:18:06  + 37728f6...751937b feature/tbs_refine_v2 -&gt; origin/feature/tbs_refine_v2  (forced update)
+19:18:06  * [new branch]      fix-electric -&gt; origin/fix-electric
+19:18:06 error: cannot lock ref 'refs/remotes/origin/hotfix': 'refs/remotes/origin/hotfix/device' exists; cannot create 'refs/remotes/origin/hotfix'
+19:18:06  ! [new branch]      hotfix     -&gt; origin/hotfix  (**unable to update local ref**)
+19:18:06  + 2adfd1b...6b06cbe redis_youhua -&gt; origin/redis_youhua  (forced update)
+19:18:06    32bae50..11f4dbc  release    -&gt; origin/release
+19:18:06  * [new branch]      templateFix -&gt; origin/templateFix
+19:18:06  * [new branch]      yudingBillFix -&gt; origin/yudingBillFix
+19:18:06  * [new branch]      zhangdan2-develop -&gt; origin/zhangdan2-develop
+19:18:06    914e845..ada877f  zhangdan2-pre -&gt; origin/zhangdan2-pre
+19:18:06    741647a..275d13c  zhangdan3-test -&gt; origin/zhangdan3-test
+19:18:06    27beb65..0b2b9e8  zhangdan3_fanghao -&gt; origin/zhangdan3_fanghao
+</code></pre>
+<p>#解决方案</p>
+<pre><code class="language-bash">git gc --prune=now
+git remote prune origi
+</code></pre>
+<p>清理本地仓库，由于一些ref在远处已删除，本地还保留，因此需要清理下下</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[mac下版本降级]]></title>
         <id>https://mrpingan.github.io/post/mac-xia-ban-ben-jiang-ji/</id>
@@ -191,58 +292,6 @@ service.spread = axios.spread
 export default service
 </code></pre>
 <p>这样，再去调用<code>all</code>、<code>spread</code>方法就不会报错了，其他的方法也是同样道理。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Django request.POST与request.body]]></title>
-        <id>https://mrpingan.github.io/post/django-requestpost-yu-requestbody/</id>
-        <link href="https://mrpingan.github.io/post/django-requestpost-yu-requestbody/">
-        </link>
-        <updated>2020-09-23T03:05:28.000Z</updated>
-        <content type="html"><![CDATA[<p>django中的request.POST只能取到Content-Type（请求头）为<code>application/x-www-form-urlencoded</code>(form表单默认格式)的数据，如果请求头为<code>application/json</code>，request.POST中的数据为空，只能在request.body中能取到原生的数据。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[django前端双引号问题]]></title>
-        <id>https://mrpingan.github.io/post/django-qian-duan-shuang-yin-hao-wen-ti/</id>
-        <link href="https://mrpingan.github.io/post/django-qian-duan-shuang-yin-hao-wen-ti/">
-        </link>
-        <updated>2020-08-28T03:42:32.000Z</updated>
-        <content type="html"><![CDATA[<p>django 前端的特殊符合，比如双引号。通过ajax传到后端会被转义为<code>&amp;quot;</code>，所以需要在前端进行处理</p>
-<ul>
-<li><code>&lt;</code> 会被转义为<code>&amp;lt</code></li>
-<li><code>&gt;</code> 会被转义为<code>&amp;gt</code></li>
-<li><code>'</code> 会被转义为 <code>&amp;#x27;</code></li>
-<li><code>&quot;</code> 会被转义为 <code>&amp;quot;</code></li>
-<li><code>&amp;</code> 会被转义为 <code>&amp;amp;</code></li>
-</ul>
-<pre><code># 如果在前端的字符是通过django 模板渲染的，可以使用模板过滤器
-# 比如前端的sql语句
-var sql_content = &quot;{{ sql_content | safe }}&quot;
-
-# 这样传到后端双引号就不会被转义为 &amp;quot;
-
-</code></pre>
-<h1 id="safe模板过滤器">safe模板过滤器</h1>
-<p>django模板引擎会自动将变量转义，所以如果你不想变量被转义。可以使用<code>safe</code>模板过滤器，这样使用</p>
-<pre><code class="language-jinja2">{{ title | safe }}
-</code></pre>
-<p>但是，这样可能会存在html注入的安全风险，因为<code>safe</code>过滤器表示这个变量是可信任的，是安全的。</p>
-<h1 id="autoescape模板标签">autoescape模板标签</h1>
-<p>也可以使用<code>autoescape</code>模板标签来禁止转义，这样使用</p>
-<pre><code class="language-jinjia2">{% autoescape off %}
-    {{ title }}
-{% endautoescape %}
-</code></pre>
-<p>默认为<strong>on</strong>，使用<strong>off</strong>可以将标签内的变量关闭自动转义</p>
-<h1 id="escapejs模板过滤器">escapejs模板过滤器</h1>
-<p>在javascripts里面，有时候需要对字符进行转义，避免出现语法错误。<br>
-比如：有变量<code>val='select &quot;aaa&quot; in tables'</code><br>
-在scripts标签中使用，我们会这样解析出来。</p>
-<pre><code class="language-js">var a = &quot;{{ val }}&quot;
-</code></pre>
-<p>这样，在渲染的时候就会报语法错误，因为变量a被解析成<code>&quot;select &quot;aaa&quot; in tables&quot;</code><br>
-这个时候，使用<code>{{ val | escapejs }}</code>就可以正常避免这样的问题。</p>
 ]]></content>
     </entry>
 </feed>
