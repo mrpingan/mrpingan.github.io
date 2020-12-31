@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>django调试正则表达式匹配问题 | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io//favicon.ico?v=1609383520291">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://mrpingan.github.io/">
+        <img class="avatar" src="https://mrpingan.github.io//images/avatar.png?v=1609383520291" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://mrpingan.github.io/">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">django调试正则表达式匹配问题</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-12-10</span>
+            
+          </div>
+          <div class="post-content">
+            <p>线上的sql审计平台(archery)反馈mongo查询失败的问题，查看源码，发现错误是在正则表达式匹配那儿出了问题。<br>
+截取部分代码如下：</p>
+<pre><code class="language-python">    def query_check(self, db_name=None, sql=''):
+        &quot;&quot;&quot;提交查询前的检查&quot;&quot;&quot;
+        if sql == '':
+            raise Exception(&quot;提交的语句不能为空&quot;)
+        sql = sql.strip()  #这一行为找到问题后新增行
+        result = {'msg': '', 'bad_query': False, 'filtered_sql': sql, 'has_star': False}
+        pattern = re.compile(r'''^db\.(\w+\.?)+(?:\([\s\S]*\)$)|^db\.getCollection\((?:\s*)(?:'|&quot;)(\w+\.?)+('|&quot;)(\s*)\)\.([A-Za-z]+)(\([\s\S]*\)$)''')
+        m = pattern.match(sql)
+        logger.error(&quot;{0!r}&quot;.format(sql))
+        if m is not None:
+            query_dict = self.parse_query_sentence(sql)
+            if &quot;method&quot; not in query_dict:
+                result['msg'] += &quot;错误：对不起，只支持查询相关方法&quot;
+                result['bad_query'] = True
+                return result
+            collection_name = query_dict[&quot;collection&quot;]
+            collection_names = self.get_all_tables(db_name).rows
+            is_in = collection_name in collection_names  #检查表是否存在
+            if not is_in:
+                result['msg'] += f&quot;\n错误: {collection_name} 文档不存在!&quot;
+                result['bad_query'] = True
+                return result
+        else:
+            result['msg'] += '请检查语句的正确性! 例子：db.users.find({})'
+            result['bad_query'] = True
+        return result
+</code></pre>
+<p>使用上面的pattern去匹配sql，如果sql匹配成功，则认为sql是合法的。但是有一个工单的sql线上程序里面执行一直匹配不上，测试环境又能正常匹配上。这儿，推荐一个正则匹配蛮好用的一个在线工具：https://www.debuggex.com/，可以可视化看到表达式。<br>
+最后发现，是开发提交的sql后面带有一个特殊符号，导致match一直匹配不上。这个问题也是找了很久。在页面上也看不到特殊符号。还是通过pysnooper查看变量找到的。所以以后使用print打印debug，最好要打印raw格式的，例如：print(&quot;{0!r}&quot;.format(var))<br>
+解决问题的办法也很简单，对sql进行strip即可,见上面代码的新增行。</p>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://mrpingan.github.io/post/element-resetfields-shi-xiao/">
+              <h3 class="post-title">
+                下一篇：element resetFields失效
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  <div class="social-container">
+    
+      
+        <a href="mrpingan.github.io" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+<a target="_blank" href="https://icons8.cn/icons/set/dog-footprint">狗的足迹 icon</a>图标来自<a target="_blank" href="https://icons8.cn">Icons8</a> | <a class="rss" href="https://mrpingan.github.io//atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

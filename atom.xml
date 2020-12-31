@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-12-07T12:52:20.936Z</updated>
+    <updated>2020-12-31T02:58:42.632Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,303 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[python要学习的几个重要的库]]></title>
+        <id>https://mrpingan.github.io/post/python-yao-xue-xi-de-ji-ge-chong-yao-de-ku/</id>
+        <link href="https://mrpingan.github.io/post/python-yao-xue-xi-de-ji-ge-chong-yao-de-ku/">
+        </link>
+        <updated>2020-12-26T08:47:24.000Z</updated>
+        <content type="html"><![CDATA[<p>1、threading<br>
+2、socket<br>
+3、socketserver<br>
+4、argparse</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[linux 命令 pushd 和popd]]></title>
+        <id>https://mrpingan.github.io/post/linux-ming-ling-pushd-he-popd/</id>
+        <link href="https://mrpingan.github.io/post/linux-ming-ling-pushd-he-popd/">
+        </link>
+        <updated>2020-12-26T07:21:44.000Z</updated>
+        <content type="html"><![CDATA[<p>https://www.jianshu.com/p/53cccae3c443</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[zabbix通过dot文件生成map]]></title>
+        <id>https://mrpingan.github.io/post/zabbix-tong-guo-dot-wen-jian-sheng-cheng-map/</id>
+        <link href="https://mrpingan.github.io/post/zabbix-tong-guo-dot-wen-jian-sheng-cheng-map/">
+        </link>
+        <updated>2020-12-23T12:18:45.000Z</updated>
+        <content type="html"><![CDATA[<p>参考：https://blog.zabbix.com/maps-for-the-lazy/2898/</p>
+<pre><code class="language-python">#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Volker Fr枚hlich, 2013
+# volker27@gmx.at
+
+&quot;&quot;&quot;
+Creates a Zabbix map from a Dot file
+zbximage and hostname are custom attributes that can be attached to nodes.
+Nodes with a hostname attribute are considered Zabbix hosts and looked up
+for. Other nodes are treated as images. zbximage and label can be used there.
+Edges have their color and label attributes considered.
+
+This script is meant as an example only!
+&quot;&quot;&quot;
+
+# Curly brace edge notation requires a patched networkx module
+# https://github.com/networkx/networkx/issues/923
+
+import networkx as nx
+from zabbix_api import ZabbixAPI
+
+dot_file=&quot;my_map.dot&quot;
+
+server=&quot;https://zabbix.example.com&quot;
+username=&quot;zabbix&quot;
+password=&quot;password&quot;
+
+width = 800
+height = 600
+mapname = &quot;wheeee&quot;
+
+ELEMENT_TYPE_HOST = 0
+ELEMENT_TYPE_MAP = 1
+ELEMENT_TYPE_TRIGGER = 2
+ELEMENT_TYPE_HOSTGROUP = 3
+ELEMENT_TYPE_IMAGE = 4
+
+ADVANCED_LABELS = 1
+LABEL_TYPE_LABEL = 0
+
+#TODO: Available images should be read via the API instead
+icons = {
+    &quot;router&quot;: 23,
+    &quot;cloud&quot;: 26,
+    &quot;desktop&quot;: 27,
+    &quot;laptop&quot;: 28,
+    &quot;server&quot;: 29,
+    &quot;sat&quot;: 30,
+    &quot;tux&quot;: 31,
+    &quot;default&quot;: 40,
+}
+
+colors = {
+    &quot;purple&quot;: &quot;FF00FF&quot;,
+    &quot;green&quot;: &quot;00FF00&quot;,
+    &quot;default&quot;: &quot;00FF00&quot;,
+}
+
+def api_connect():
+    zapi = ZabbixAPI(server=server, path=&quot;&quot;, log_level=1)
+    zapi.login(username, password)
+    return zapi
+
+def host_lookup(hostname):
+    hostid = zapi.host.get({&quot;filter&quot;: {&quot;host&quot;: hostname}})
+    if hostid:
+        return str(hostid[0]['hostid'])
+
+################################################################
+
+# Convert your dot file to a graph
+G=nx.read_dot(dot_file)
+
+# Use an algorithm of your choice to layout the nodes in x and y
+pos = nx.graphviz_layout(G)
+
+# Find maximum coordinate values of the layout to scale it better to the desired output size
+#TODO: The scaling could probably be solved within Graphviz
+# The origin is different between Zabbix (top left) and Graphviz (bottom left)
+# Join the temporary selementid necessary for links and the coordinates to the node data
+poslist=list(pos.values())
+maxpos=map(max, zip(*poslist))
+    
+for host, coordinates in pos.iteritems():
+   pos[host] = [int(coordinates[0]*width/maxpos[0]*0.95-coordinates[0]*0.1), int((height-coordinates[1]*height/maxpos[1])*0.95+coordinates[1]*0.1)]
+nx.set_node_attributes(G,'coordinates',pos)
+
+selementids = dict(enumerate(G.nodes_iter(), start=1))
+selementids = dict((v,k) for k,v in selementids.iteritems())
+nx.set_node_attributes(G,'selementid',selementids)
+
+# Prepare map information
+map_params = {
+    &quot;name&quot;: mapname,
+    &quot;label_format&quot;: ADVANCED_LABELS,
+    &quot;label_type_image&quot;: LABEL_TYPE_LABEL,
+    &quot;width&quot;: width,
+    &quot;height&quot;: height
+}
+element_params=[]
+link_params=[]
+
+zapi = api_connect()
+
+# Prepare node information
+for node, data in G.nodes_iter(data=True):
+    # Generic part
+    map_element = {}
+    map_element.update({
+            &quot;selementid&quot;: data['selementid'],
+            &quot;x&quot;: data['coordinates'][0],
+            &quot;y&quot;: data['coordinates'][1],
+            &quot;use_iconmap&quot;: 0,
+            })
+
+    if &quot;hostname&quot; in data:
+        map_element.update({
+                &quot;elementtype&quot;: ELEMENT_TYPE_HOST,
+                &quot;elementid&quot;: host_lookup(data['hostname'].strip('&quot;')),
+                &quot;iconid_off&quot;: icons['server'],
+                })
+    else:
+        map_element.update({
+            &quot;elementtype&quot;: ELEMENT_TYPE_IMAGE,
+            &quot;elementid&quot;: 0,
+        })
+    # Labels are only set for images
+    # elementid is necessary, due to ZBX-6844
+    # If no image is set, a default image is used
+    if &quot;label&quot; in data:
+        map_element.update({
+            &quot;label&quot;: data['label'].strip('&quot;')
+        })
+    if &quot;zbximage&quot; in data:
+        map_element.update({
+            &quot;iconid_off&quot;: icons[data['zbximage'].strip('&quot;')],
+        })
+    elif &quot;hostname&quot; not in data and &quot;zbximage&quot; not in data:
+        map_element.update({
+            &quot;iconid_off&quot;: icons['default'],
+        })
+
+    element_params.append(map_element)
+
+# Prepare edge information -- Iterate through edges to create the Zabbix links,
+# based on selementids
+nodenum = nx.get_node_attributes(G,'selementid')
+for nodea, nodeb, data in G.edges_iter(data=True):
+    link = {}
+    link.update({
+        &quot;selementid1&quot;: nodenum[nodea],
+        &quot;selementid2&quot;: nodenum[nodeb],
+        })
+
+    if &quot;color&quot; in data:
+        color =  colors[data['color'].strip('&quot;')]
+        link.update({
+            &quot;color&quot;: color
+        })
+    else:
+        link.update({
+            &quot;color&quot;: colors['default']
+        })
+
+    if &quot;label&quot; in data:
+        label =  data['label'].strip('&quot;')
+        link.update({
+            &quot;label&quot;: label,
+        })
+
+    link_params.append(link)
+
+# Join the prepared information
+map_params[&quot;selements&quot;] = element_params
+map_params[&quot;links&quot;] = link_params
+    
+# Get rid of an existing map of that name and create a new one
+del_mapid = zapi.map.get({&quot;filter&quot;: {&quot;name&quot;: mapname}})
+if del_mapid:
+    zapi.map.delete([del_mapid[0]['sysmapid']])
+
+map=zapi.map.create(map_params)
+</code></pre>
+<p>dot文件</p>
+<pre><code class="language-dot">graph G {
+    //These are attempts to manipulate the layout.
+    //Better ways exist, I'm certain.
+
+    //Force straight lines
+	graph [layout=dot overlap=false sep=&quot;+125,125&quot; splines=false]
+    //Force icons to be considered of the same and constant size
+    node [shape=box fixedsize=true width=1 height=1]
+    
+    //We don't want to type the long hostname when defining edges
+    bob [hostname=&quot;bob.example.com&quot;]
+    joe [hostname=&quot;joe.tx123.ops.example.com&quot;]
+
+    router [label=&quot;Our router&quot; zbximage=&quot;router&quot;]
+
+    mystery_guest[label=&quot;I walk alone&quot; zbximage=&quot;router&quot;]
+
+    //This notation allows for muliple edges from router in one go
+    router -- { bob joe } [color=&quot;green&quot;]
+
+    //A separate daisy chain of nodes without further details
+    host_a -- host_b -- host_c -- host_d [label=&quot;Wheee&quot;]
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[好用的免费图片api]]></title>
+        <id>https://mrpingan.github.io/post/hao-yong-de-mian-fei-tu-pian-api/</id>
+        <link href="https://mrpingan.github.io/post/hao-yong-de-mian-fei-tu-pian-api/">
+        </link>
+        <updated>2020-12-11T10:47:15.000Z</updated>
+        <content type="html"><![CDATA[<p>https://source.unsplash.com/</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[django调试正则表达式匹配问题]]></title>
+        <id>https://mrpingan.github.io/post/django-diao-shi-zheng-ze-biao-da-shi-pi-pei-wen-ti/</id>
+        <link href="https://mrpingan.github.io/post/django-diao-shi-zheng-ze-biao-da-shi-pi-pei-wen-ti/">
+        </link>
+        <updated>2020-12-10T15:12:32.000Z</updated>
+        <content type="html"><![CDATA[<p>线上的sql审计平台(archery)反馈mongo查询失败的问题，查看源码，发现错误是在正则表达式匹配那儿出了问题。<br>
+截取部分代码如下：</p>
+<pre><code class="language-python">    def query_check(self, db_name=None, sql=''):
+        &quot;&quot;&quot;提交查询前的检查&quot;&quot;&quot;
+        if sql == '':
+            raise Exception(&quot;提交的语句不能为空&quot;)
+        sql = sql.strip()  #这一行为找到问题后新增行
+        result = {'msg': '', 'bad_query': False, 'filtered_sql': sql, 'has_star': False}
+        pattern = re.compile(r'''^db\.(\w+\.?)+(?:\([\s\S]*\)$)|^db\.getCollection\((?:\s*)(?:'|&quot;)(\w+\.?)+('|&quot;)(\s*)\)\.([A-Za-z]+)(\([\s\S]*\)$)''')
+        m = pattern.match(sql)
+        logger.error(&quot;{0!r}&quot;.format(sql))
+        if m is not None:
+            query_dict = self.parse_query_sentence(sql)
+            if &quot;method&quot; not in query_dict:
+                result['msg'] += &quot;错误：对不起，只支持查询相关方法&quot;
+                result['bad_query'] = True
+                return result
+            collection_name = query_dict[&quot;collection&quot;]
+            collection_names = self.get_all_tables(db_name).rows
+            is_in = collection_name in collection_names  #检查表是否存在
+            if not is_in:
+                result['msg'] += f&quot;\n错误: {collection_name} 文档不存在!&quot;
+                result['bad_query'] = True
+                return result
+        else:
+            result['msg'] += '请检查语句的正确性! 例子：db.users.find({})'
+            result['bad_query'] = True
+        return result
+</code></pre>
+<p>使用上面的pattern去匹配sql，如果sql匹配成功，则认为sql是合法的。但是有一个工单的sql线上程序里面执行一直匹配不上，测试环境又能正常匹配上。这儿，推荐一个正则匹配蛮好用的一个在线工具：https://www.debuggex.com/，可以可视化看到表达式。<br>
+最后发现，是开发提交的sql后面带有一个特殊符号，导致match一直匹配不上。这个问题也是找了很久。在页面上也看不到特殊符号。还是通过pysnooper查看变量找到的。所以以后使用print打印debug，最好要打印raw格式的，例如：print(&quot;{0!r}&quot;.format(var))<br>
+解决问题的办法也很简单，对sql进行strip即可,见上面代码的新增行。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[element resetFields失效]]></title>
+        <id>https://mrpingan.github.io/post/element-resetfields-shi-xiao/</id>
+        <link href="https://mrpingan.github.io/post/element-resetfields-shi-xiao/">
+        </link>
+        <updated>2020-12-08T06:10:38.000Z</updated>
+        <content type="html"><![CDATA[<p>问题：在使用element-ui的表单组件时，发现使用resetFields api重置表单无效<br>
+解决办法：在表单中加入prop属性即可</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[使用setTimeout取代setInterval]]></title>
         <id>https://mrpingan.github.io/post/shi-yong-settimeout-qu-dai-setinterval/</id>
@@ -201,97 +498,6 @@ For pkg-config to find openssl@1.1 you may need to set:
 </ul>
 <pre><code>/usr/local/Cellar/openssl/1.0.2s/
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[命令行]]></title>
-        <id>https://mrpingan.github.io/post/ming-ling-xing/</id>
-        <link href="https://mrpingan.github.io/post/ming-ling-xing/">
-        </link>
-        <updated>2020-10-30T06:56:23.000Z</updated>
-        <content type="html"><![CDATA[<p>https://gitee.com/hequan2020/autoops</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[ssh登录出现Permission denied (publickey).]]></title>
-        <id>https://mrpingan.github.io/post/ssh-deng-lu-chu-xian-permission-denied-publickey/</id>
-        <link href="https://mrpingan.github.io/post/ssh-deng-lu-chu-xian-permission-denied-publickey/">
-        </link>
-        <updated>2020-10-28T05:02:48.000Z</updated>
-        <content type="html"><![CDATA[<p>https://askubuntu.com/questions/872297/sshd-user-username-not-allowed-because-shell-zsh-does-not-exist</p>
-<p>查看<code>/var/log/auth.log</code></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[django使用channels实现websocket]]></title>
-        <id>https://mrpingan.github.io/post/django-shi-yong-channels-shi-xian-websocket/</id>
-        <link href="https://mrpingan.github.io/post/django-shi-yong-channels-shi-xian-websocket/">
-        </link>
-        <updated>2020-10-28T02:22:32.000Z</updated>
-        <content type="html"><![CDATA[<p>https://www.jianshu.com/p/0f75e2623418</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[pg配置分区插件pg_pathman]]></title>
-        <id>https://mrpingan.github.io/post/pg-pei-zhi-fen-qu-cha-jian-pg_pathman/</id>
-        <link href="https://mrpingan.github.io/post/pg-pei-zhi-fen-qu-cha-jian-pg_pathman/">
-        </link>
-        <updated>2020-10-25T14:53:14.000Z</updated>
-        <content type="html"><![CDATA[<p>https://www.programmersought.com/article/25792165890/</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[disk]]></title>
-        <id>https://mrpingan.github.io/post/disk/</id>
-        <link href="https://mrpingan.github.io/post/disk/">
-        </link>
-        <updated>2020-10-22T07:12:29.000Z</updated>
-        <content type="html"><![CDATA[<p>write-through<br>
-vs<br>
-write-back</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[vue项目组axios.all is not funciton问题]]></title>
-        <id>https://mrpingan.github.io/post/vue-xiang-mu-zu-axiosall-is-not-funciton-wen-ti/</id>
-        <link href="https://mrpingan.github.io/post/vue-xiang-mu-zu-axiosall-is-not-funciton-wen-ti/">
-        </link>
-        <updated>2020-10-20T06:25:03.000Z</updated>
-        <content type="html"><![CDATA[<p>我们的项目在很多时候，不想使用<code>axios</code>默认的配置，都需要使用自定义设置的<code>axios</code>实例。比如：</p>
-<pre><code class="language-vue">import axios from 'axios'
-
-// create an axios instance
-const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  withCredentials: true, // send cookies when cross-domain requests
-  timeout: 50000 // request timeout
-})
-export default service
-</code></pre>
-<p>设置完后，使用<code>get</code>、<code>post</code>、<code>put</code>等基础的http方法是没有问题的。但是如果使用<code>all</code>、<code>spread</code>、<code>Cancel</code>、<code>CancelToken</code>、<code>isCancel</code>方法，console将会报错</p>
-<pre><code>axios.all is not a function
-</code></pre>
-<h1 id="解决方案">解决方案</h1>
-<p>只需要在封装的<code>axios</code>文件中加入</p>
-<pre><code class="language-vue">service.all = axios.all
-service.spread = axios.spread
-</code></pre>
-<p>因此，上面的文件变成这样</p>
-<pre><code class="language-vue">import axios from 'axios'
-
-// create an axios instance
-const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  withCredentials: true, // send cookies when cross-domain requests
-  timeout: 50000 // request timeout
-})
-
-service.all = axios.all
-service.spread = axios.spread
-
-export default service
-</code></pre>
-<p>这样，再去调用<code>all</code>、<code>spread</code>方法就不会报错了，其他的方法也是同样道理。</p>
 ]]></content>
     </entry>
 </feed>

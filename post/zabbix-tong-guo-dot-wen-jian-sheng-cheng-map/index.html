@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>zabbix通过dot文件生成map | Ping&#39;s Home</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrpingan.github.io//favicon.ico?v=1609383520291">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://mrpingan.github.io//styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://mrpingan.github.io/">
+        <img class="avatar" src="https://mrpingan.github.io//images/avatar.png?v=1609383520291" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://mrpingan.github.io/">
+        <h1 class="site-title">Ping&#39;s Home</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">zabbix通过dot文件生成map</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2020-12-23</span>
+            
+          </div>
+          <div class="post-content">
+            <p>参考：https://blog.zabbix.com/maps-for-the-lazy/2898/</p>
+<pre><code class="language-python">#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Volker Fr枚hlich, 2013
+# volker27@gmx.at
+
+&quot;&quot;&quot;
+Creates a Zabbix map from a Dot file
+zbximage and hostname are custom attributes that can be attached to nodes.
+Nodes with a hostname attribute are considered Zabbix hosts and looked up
+for. Other nodes are treated as images. zbximage and label can be used there.
+Edges have their color and label attributes considered.
+
+This script is meant as an example only!
+&quot;&quot;&quot;
+
+# Curly brace edge notation requires a patched networkx module
+# https://github.com/networkx/networkx/issues/923
+
+import networkx as nx
+from zabbix_api import ZabbixAPI
+
+dot_file=&quot;my_map.dot&quot;
+
+server=&quot;https://zabbix.example.com&quot;
+username=&quot;zabbix&quot;
+password=&quot;password&quot;
+
+width = 800
+height = 600
+mapname = &quot;wheeee&quot;
+
+ELEMENT_TYPE_HOST = 0
+ELEMENT_TYPE_MAP = 1
+ELEMENT_TYPE_TRIGGER = 2
+ELEMENT_TYPE_HOSTGROUP = 3
+ELEMENT_TYPE_IMAGE = 4
+
+ADVANCED_LABELS = 1
+LABEL_TYPE_LABEL = 0
+
+#TODO: Available images should be read via the API instead
+icons = {
+    &quot;router&quot;: 23,
+    &quot;cloud&quot;: 26,
+    &quot;desktop&quot;: 27,
+    &quot;laptop&quot;: 28,
+    &quot;server&quot;: 29,
+    &quot;sat&quot;: 30,
+    &quot;tux&quot;: 31,
+    &quot;default&quot;: 40,
+}
+
+colors = {
+    &quot;purple&quot;: &quot;FF00FF&quot;,
+    &quot;green&quot;: &quot;00FF00&quot;,
+    &quot;default&quot;: &quot;00FF00&quot;,
+}
+
+def api_connect():
+    zapi = ZabbixAPI(server=server, path=&quot;&quot;, log_level=1)
+    zapi.login(username, password)
+    return zapi
+
+def host_lookup(hostname):
+    hostid = zapi.host.get({&quot;filter&quot;: {&quot;host&quot;: hostname}})
+    if hostid:
+        return str(hostid[0]['hostid'])
+
+################################################################
+
+# Convert your dot file to a graph
+G=nx.read_dot(dot_file)
+
+# Use an algorithm of your choice to layout the nodes in x and y
+pos = nx.graphviz_layout(G)
+
+# Find maximum coordinate values of the layout to scale it better to the desired output size
+#TODO: The scaling could probably be solved within Graphviz
+# The origin is different between Zabbix (top left) and Graphviz (bottom left)
+# Join the temporary selementid necessary for links and the coordinates to the node data
+poslist=list(pos.values())
+maxpos=map(max, zip(*poslist))
+    
+for host, coordinates in pos.iteritems():
+   pos[host] = [int(coordinates[0]*width/maxpos[0]*0.95-coordinates[0]*0.1), int((height-coordinates[1]*height/maxpos[1])*0.95+coordinates[1]*0.1)]
+nx.set_node_attributes(G,'coordinates',pos)
+
+selementids = dict(enumerate(G.nodes_iter(), start=1))
+selementids = dict((v,k) for k,v in selementids.iteritems())
+nx.set_node_attributes(G,'selementid',selementids)
+
+# Prepare map information
+map_params = {
+    &quot;name&quot;: mapname,
+    &quot;label_format&quot;: ADVANCED_LABELS,
+    &quot;label_type_image&quot;: LABEL_TYPE_LABEL,
+    &quot;width&quot;: width,
+    &quot;height&quot;: height
+}
+element_params=[]
+link_params=[]
+
+zapi = api_connect()
+
+# Prepare node information
+for node, data in G.nodes_iter(data=True):
+    # Generic part
+    map_element = {}
+    map_element.update({
+            &quot;selementid&quot;: data['selementid'],
+            &quot;x&quot;: data['coordinates'][0],
+            &quot;y&quot;: data['coordinates'][1],
+            &quot;use_iconmap&quot;: 0,
+            })
+
+    if &quot;hostname&quot; in data:
+        map_element.update({
+                &quot;elementtype&quot;: ELEMENT_TYPE_HOST,
+                &quot;elementid&quot;: host_lookup(data['hostname'].strip('&quot;')),
+                &quot;iconid_off&quot;: icons['server'],
+                })
+    else:
+        map_element.update({
+            &quot;elementtype&quot;: ELEMENT_TYPE_IMAGE,
+            &quot;elementid&quot;: 0,
+        })
+    # Labels are only set for images
+    # elementid is necessary, due to ZBX-6844
+    # If no image is set, a default image is used
+    if &quot;label&quot; in data:
+        map_element.update({
+            &quot;label&quot;: data['label'].strip('&quot;')
+        })
+    if &quot;zbximage&quot; in data:
+        map_element.update({
+            &quot;iconid_off&quot;: icons[data['zbximage'].strip('&quot;')],
+        })
+    elif &quot;hostname&quot; not in data and &quot;zbximage&quot; not in data:
+        map_element.update({
+            &quot;iconid_off&quot;: icons['default'],
+        })
+
+    element_params.append(map_element)
+
+# Prepare edge information -- Iterate through edges to create the Zabbix links,
+# based on selementids
+nodenum = nx.get_node_attributes(G,'selementid')
+for nodea, nodeb, data in G.edges_iter(data=True):
+    link = {}
+    link.update({
+        &quot;selementid1&quot;: nodenum[nodea],
+        &quot;selementid2&quot;: nodenum[nodeb],
+        })
+
+    if &quot;color&quot; in data:
+        color =  colors[data['color'].strip('&quot;')]
+        link.update({
+            &quot;color&quot;: color
+        })
+    else:
+        link.update({
+            &quot;color&quot;: colors['default']
+        })
+
+    if &quot;label&quot; in data:
+        label =  data['label'].strip('&quot;')
+        link.update({
+            &quot;label&quot;: label,
+        })
+
+    link_params.append(link)
+
+# Join the prepared information
+map_params[&quot;selements&quot;] = element_params
+map_params[&quot;links&quot;] = link_params
+    
+# Get rid of an existing map of that name and create a new one
+del_mapid = zapi.map.get({&quot;filter&quot;: {&quot;name&quot;: mapname}})
+if del_mapid:
+    zapi.map.delete([del_mapid[0]['sysmapid']])
+
+map=zapi.map.create(map_params)
+</code></pre>
+<p>dot文件</p>
+<pre><code class="language-dot">graph G {
+    //These are attempts to manipulate the layout.
+    //Better ways exist, I'm certain.
+
+    //Force straight lines
+	graph [layout=dot overlap=false sep=&quot;+125,125&quot; splines=false]
+    //Force icons to be considered of the same and constant size
+    node [shape=box fixedsize=true width=1 height=1]
+    
+    //We don't want to type the long hostname when defining edges
+    bob [hostname=&quot;bob.example.com&quot;]
+    joe [hostname=&quot;joe.tx123.ops.example.com&quot;]
+
+    router [label=&quot;Our router&quot; zbximage=&quot;router&quot;]
+
+    mystery_guest[label=&quot;I walk alone&quot; zbximage=&quot;router&quot;]
+
+    //This notation allows for muliple edges from router in one go
+    router -- { bob joe } [color=&quot;green&quot;]
+
+    //A separate daisy chain of nodes without further details
+    host_a -- host_b -- host_c -- host_d [label=&quot;Wheee&quot;]
+}
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://mrpingan.github.io/post/hao-yong-de-mian-fei-tu-pian-api/">
+              <h3 class="post-title">
+                下一篇：好用的免费图片api
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">温故而知新</div>
+  <div class="social-container">
+    
+      
+        <a href="mrpingan.github.io" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+<a target="_blank" href="https://icons8.cn/icons/set/dog-footprint">狗的足迹 icon</a>图标来自<a target="_blank" href="https://icons8.cn">Icons8</a> | <a class="rss" href="https://mrpingan.github.io//atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
