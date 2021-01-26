@@ -2,14 +2,46 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2020-12-31T02:58:42.632Z</updated>
+    <updated>2021-01-26T16:27:50.050Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2020, Ping&apos;s Home</rights>
+    <rights>All rights reserved 2021, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[同服务器部署多个版本pm2]]></title>
+        <id>https://mrpingan.github.io/post/tong-fu-wu-qi-bu-shu-duo-ge-ban-ben-pm2/</id>
+        <link href="https://mrpingan.github.io/post/tong-fu-wu-qi-bu-shu-duo-ge-ban-ben-pm2/">
+        </link>
+        <updated>2021-01-26T16:23:53.000Z</updated>
+        <content type="html"><![CDATA[<p>需要在同一个服务器上部署多个pm2,如果直接使用环境变量切换node版本，然后启动pm2是没用的，需要指定PM2_HOME环境变量</p>
+<pre><code class="language-bash">Multiple PM2 on the same server
+
+The client and daemon communicates via socket files available in $HOME/.pm2/[pub.sock|rpc.sock]
+
+You can start multiple PM2 instances by changing the PM2_HOME environmnent variable.
+
+$ PM2_HOME='.pm2' pm2 start echo.js --name=&quot;echo-node-1&quot;
+$ PM2_HOME='.pm3' pm2 start echo.js --name=&quot;echo-node-2&quot;
+This will start two different PM2 instances. To list processes managed by each different instances do:
+
+$ PM2_HOME='.pm2' pm2 list
+$ PM2_HOME='.pm3' pm2 list
+
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Django select_related/prefetch_related提高查询性能]]></title>
+        <id>https://mrpingan.github.io/post/django-select_relatedprefetch_related-ti-gao-cha-xun-xing-neng/</id>
+        <link href="https://mrpingan.github.io/post/django-select_relatedprefetch_related-ti-gao-cha-xun-xing-neng/">
+        </link>
+        <updated>2021-01-06T06:54:30.000Z</updated>
+        <content type="html"><![CDATA[<p>https://www.cnblogs.com/ccorz/p/6097030.html</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[python要学习的几个重要的库]]></title>
         <id>https://mrpingan.github.io/post/python-yao-xue-xi-de-ji-ge-chong-yao-de-ku/</id>
@@ -406,98 +438,6 @@ handleShowLog定时3s查询后端日志，当getDeployLog这个接口函数能�
 git remote prune origi
 </code></pre>
 <p>清理本地仓库，由于一些ref在远处已删除，本地还保留，因此需要清理下下</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[mac下版本降级]]></title>
-        <id>https://mrpingan.github.io/post/mac-xia-ban-ben-jiang-ji/</id>
-        <link href="https://mrpingan.github.io/post/mac-xia-ban-ben-jiang-ji/">
-        </link>
-        <updated>2020-11-26T07:51:23.000Z</updated>
-        <content type="html"><![CDATA[<p>本地的node版本太高，导致前端项目   <code>npm run dev</code> 失败。选择降级</p>
-<h2 id="按照node版本管理模块n">按照node版本管理模块n</h2>
-<pre><code>npm install n -g
-
-</code></pre>
-<h2 id="版本降级升级">版本降级/升级</h2>
-<pre><code># n 版本号，例如：10.16.2
-sudo n 10.16.2
-</code></pre>
-<h2 id="按照稳定版">按照稳定版</h2>
-<pre><code>sudo n stable
-</code></pre>
-<h2 id="安装最新版">安装最新版</h2>
-<pre><code>sudo n latest
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[mac安装ffmpeg之后python环境ssl无法使用]]></title>
-        <id>https://mrpingan.github.io/post/mac-an-zhuang-ffmpeg-zhi-hou-python-huan-jing-ssl-wu-fa-shi-yong/</id>
-        <link href="https://mrpingan.github.io/post/mac-an-zhuang-ffmpeg-zhi-hou-python-huan-jing-ssl-wu-fa-shi-yong/">
-        </link>
-        <updated>2020-11-25T08:59:15.000Z</updated>
-        <summary type="html"><![CDATA[<h1 id="pip安装依赖错误">pip安装依赖错误</h1>
-<pre><code>pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.
-Collecting fabric2
-  Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-  Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-  Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-</code></pre>
-<p>安装Google上的方法并无效：</p>
-<pre><code>brew install openssl
-brew unlink openssl &amp;&amp; brew link openssl --force
-</code></pre>
-<p>执行一直报这个错误</p>
-<pre><code>Warning: Refusing to link macOS provided/shadowed software: openssl@1.1
-If you need to have openssl@1.1 first in your PATH run:
-  echo 'export PATH=&quot;/usr/local/opt/openssl@1.1/bin:$PATH&quot;' &gt;&gt; /Users/ping/.bash_profile
-
-For compilers to find openssl@1.1 you may need to set:
-  export LDFLAGS=&quot;-L/usr/local/opt/openssl@1.1/lib&quot;
-  export CPPFLAGS=&quot;-I/usr/local/opt/openssl@1.1/include&quot;
-
-For pkg-config to find openssl@1.1 you may need to set:
-  export PKG_CONFIG_PATH=&quot;/usr/local/opt/openssl@1.1/lib/pkgconfig&quot;
-</code></pre>
-<h1 id="解决方案">解决方案</h1>
-<pre><code>brew switch openssl 1.0.2s
-</code></pre>
-<p>*<em>1.0.2s</em></p>
-]]></summary>
-        <content type="html"><![CDATA[<h1 id="pip安装依赖错误">pip安装依赖错误</h1>
-<pre><code>pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.
-Collecting fabric2
-  Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-  Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-  Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(&quot;Can't connect to HTTPS URL because the SSL module is not available.&quot;,)': /simple/fabric2/
-</code></pre>
-<p>安装Google上的方法并无效：</p>
-<pre><code>brew install openssl
-brew unlink openssl &amp;&amp; brew link openssl --force
-</code></pre>
-<p>执行一直报这个错误</p>
-<pre><code>Warning: Refusing to link macOS provided/shadowed software: openssl@1.1
-If you need to have openssl@1.1 first in your PATH run:
-  echo 'export PATH=&quot;/usr/local/opt/openssl@1.1/bin:$PATH&quot;' &gt;&gt; /Users/ping/.bash_profile
-
-For compilers to find openssl@1.1 you may need to set:
-  export LDFLAGS=&quot;-L/usr/local/opt/openssl@1.1/lib&quot;
-  export CPPFLAGS=&quot;-I/usr/local/opt/openssl@1.1/include&quot;
-
-For pkg-config to find openssl@1.1 you may need to set:
-  export PKG_CONFIG_PATH=&quot;/usr/local/opt/openssl@1.1/lib/pkgconfig&quot;
-</code></pre>
-<h1 id="解决方案">解决方案</h1>
-<pre><code>brew switch openssl 1.0.2s
-</code></pre>
-<p>*<em>1.0.2s</em></p>
-<!-- more -->
-<ul>
-<li>可以看你本地上openssl的文件路径，比如我的文件路径如下</li>
-</ul>
-<pre><code>/usr/local/Cellar/openssl/1.0.2s/
-</code></pre>
 ]]></content>
     </entry>
 </feed>

@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>apollo笔记 | Ping&#39;s Home</title>
+<title>同服务器部署多个版本pm2 | Ping&#39;s Home</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -80,27 +80,36 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">apollo笔记</h2>
+          <h2 class="post-title">同服务器部署多个版本pm2</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2020-02-12</span>
+            <span><i class="icon-calendar-outline"></i> 2021-01-27</span>
             
           </div>
           <div class="post-content">
-            <p>apollo是携程开源的配置中心组件。可以将配置集中放置，并在配置变更后推送给应用，实现修改配置无需重启服务，而且配置有版本控制，可回滚。</p>
-<h1 id="为什么要引入apollo">为什么要引入Apollo</h1>
-<p>1、接入apollo可以让配置集中放置，配置热更新，服务无需重启。<br>
-2、接入apollo更安全。配置如果放在服务源码中，如果服务源码泄露，配置也会随着泄露。<br>
-参考文章：http://beckjin.com/2019/07/14/apollo-distributed/<br>
-https://www.infoq.cn/article/ctrip-apollo-configuration-center-architecture</p>
+            <p>需要在同一个服务器上部署多个pm2,如果直接使用环境变量切换node版本，然后启动pm2是没用的，需要指定PM2_HOME环境变量</p>
+<pre><code class="language-bash">Multiple PM2 on the same server
+
+The client and daemon communicates via socket files available in $HOME/.pm2/[pub.sock|rpc.sock]
+
+You can start multiple PM2 instances by changing the PM2_HOME environmnent variable.
+
+$ PM2_HOME='.pm2' pm2 start echo.js --name=&quot;echo-node-1&quot;
+$ PM2_HOME='.pm3' pm2 start echo.js --name=&quot;echo-node-2&quot;
+This will start two different PM2 instances. To list processes managed by each different instances do:
+
+$ PM2_HOME='.pm2' pm2 list
+$ PM2_HOME='.pm3' pm2 list
+
+</code></pre>
 
           </div>
         </div>
 
         
           <div class="next-post">
-            <a class="purple-link" href="https://mrpingan.github.io/post/rabbitmq-ji-qun-bu-fen-wen-dang/">
+            <a class="purple-link" href="https://mrpingan.github.io/post/django-select_relatedprefetch_related-ti-gao-cha-xun-xing-neng/">
               <h3 class="post-title">
-                下一篇：rabbitmq集群部分文档
+                下一篇：Django select_related/prefetch_related提高查询性能
               </h3>
             </a>
           </div>
