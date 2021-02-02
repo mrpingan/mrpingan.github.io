@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mrpingan.github.io/</id>
     <title>Ping&apos;s Home</title>
-    <updated>2021-01-26T16:27:50.050Z</updated>
+    <updated>2021-02-02T09:24:42.060Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mrpingan.github.io/"/>
     <link rel="self" href="https://mrpingan.github.io/atom.xml"/>
@@ -10,6 +10,98 @@
     <logo>https://mrpingan.github.io/images/avatar.png</logo>
     <icon>https://mrpingan.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Ping&apos;s Home</rights>
+    <entry>
+        <title type="html"><![CDATA[python获取目录结构]]></title>
+        <id>https://mrpingan.github.io/post/python-huo-qu-mu-lu-jie-gou/</id>
+        <link href="https://mrpingan.github.io/post/python-huo-qu-mu-lu-jie-gou/">
+        </link>
+        <updated>2021-02-02T09:22:53.000Z</updated>
+        <content type="html"><![CDATA[<pre><code class="language-python">
+# -*- coding:utf-8 -*-
+
+import os
+
+ret_data = []
+
+
+def list_to_tree(data):
+    res = {}
+
+    for i, v in enumerate(data):
+
+        v['parent_id'] = v['parent_id'] if v['parent_id'] else 0
+        res.setdefault(v['id'], v).update(v)
+        res.setdefault(v['parent_id'], {}).setdefault('children',[]).append(res.get(v['id'], v))
+    return res
+
+
+def get_tree(path):
+    all_file_list = os.listdir(path)
+
+    curr_inode = os.stat(path).st_ino
+    if not bool(ret_data):
+        ret_data.append({
+            'id':curr_inode,
+            'parent_id': 0,
+            'label': '.'
+        })
+    for file in all_file_list:
+        file_abs_path = os.path.join(path, file)
+
+        # 判断是不是文件夹
+        if os.path.isdir(file_abs_path):
+            get_tree(file_abs_path)
+
+        ret_data.append({
+            'id': os.stat(file_abs_path).st_ino,
+            'parent_id': curr_inode,
+            'label': file
+        })
+    res = list_to_tree(ret_data)[curr_inode]['children']
+    return res
+
+</code></pre>
+<p>运行之后的结果:</p>
+<pre><code class="language-json">[
+    {
+        &quot;children&quot;:[
+            {
+                &quot;parent_id&quot;:11024076,
+                &quot;id&quot;:11024743,
+                &quot;label&quot;:&quot;tmp&quot;
+            },
+            {
+                &quot;children&quot;:[
+                    {
+                        &quot;parent_id&quot;:11811479,
+                        &quot;id&quot;:11811503,
+                        &quot;label&quot;:&quot;bb&quot;
+                    }
+                ],
+                &quot;parent_id&quot;:11024076,
+                &quot;id&quot;:11811479,
+                &quot;label&quot;:&quot;aa&quot;
+            }
+        ],
+        &quot;parent_id&quot;:11024017,
+        &quot;id&quot;:11024076,
+        &quot;label&quot;:&quot;client_info&quot;
+    },
+    {
+        &quot;parent_id&quot;:11024017,
+        &quot;id&quot;:11024742,
+        &quot;label&quot;:&quot;tmp&quot;
+    },
+    {
+        &quot;parent_id&quot;:11024017,
+        &quot;id&quot;:11024379,
+        &quot;label&quot;:&quot;公摊异常数据时间线修复_1612186569403.csv&quot;
+    }
+]
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[同服务器部署多个版本pm2]]></title>
         <id>https://mrpingan.github.io/post/tong-fu-wu-qi-bu-shu-duo-ge-ban-ben-pm2/</id>
@@ -408,36 +500,6 @@ handleShowLog定时3s查询后端日志，当getDeployLog这个接口函数能�
       }, 0)
     }
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[git 拉取代码失败]]></title>
-        <id>https://mrpingan.github.io/post/git-la-qu-dai-ma-shi-bai/</id>
-        <link href="https://mrpingan.github.io/post/git-la-qu-dai-ma-shi-bai/">
-        </link>
-        <updated>2020-12-03T11:50:34.000Z</updated>
-        <content type="html"><![CDATA[<p>#错误</p>
-<pre><code class="language-bash">19:18:06 From code.dding.net:server/lease-platform/pms-api
-19:18:06    df96594..b8ce1ea  dev_zhangdan2_fanghao -&gt; origin/dev_zhangdan2_fanghao
-19:18:06    d7fd965..479ad2a  develop    -&gt; origin/develop
-19:18:06  + 37728f6...751937b feature/tbs_refine_v2 -&gt; origin/feature/tbs_refine_v2  (forced update)
-19:18:06  * [new branch]      fix-electric -&gt; origin/fix-electric
-19:18:06 error: cannot lock ref 'refs/remotes/origin/hotfix': 'refs/remotes/origin/hotfix/device' exists; cannot create 'refs/remotes/origin/hotfix'
-19:18:06  ! [new branch]      hotfix     -&gt; origin/hotfix  (**unable to update local ref**)
-19:18:06  + 2adfd1b...6b06cbe redis_youhua -&gt; origin/redis_youhua  (forced update)
-19:18:06    32bae50..11f4dbc  release    -&gt; origin/release
-19:18:06  * [new branch]      templateFix -&gt; origin/templateFix
-19:18:06  * [new branch]      yudingBillFix -&gt; origin/yudingBillFix
-19:18:06  * [new branch]      zhangdan2-develop -&gt; origin/zhangdan2-develop
-19:18:06    914e845..ada877f  zhangdan2-pre -&gt; origin/zhangdan2-pre
-19:18:06    741647a..275d13c  zhangdan3-test -&gt; origin/zhangdan3-test
-19:18:06    27beb65..0b2b9e8  zhangdan3_fanghao -&gt; origin/zhangdan3_fanghao
-</code></pre>
-<p>#解决方案</p>
-<pre><code class="language-bash">git gc --prune=now
-git remote prune origi
-</code></pre>
-<p>清理本地仓库，由于一些ref在远处已删除，本地还保留，因此需要清理下下</p>
 ]]></content>
     </entry>
 </feed>
